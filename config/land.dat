@@ -1,0 +1,161 @@
+[LUC]
+
+Nland = 14
+LUC: /libre/querela/Fukushima/multi_run/heavy_data/$RESOLUTION$/ground/LUC-glcf.bin
+
+[roughness]
+
+# Winter.
+0.0001	0.90	2.65	0.80	0.95
+1.15	1.15	0.65	0.10	0.03
+0.05	0.02	0.02	1.00
+
+
+# Spring.
+0.0001	0.80	2.65	0.60	0.75
+1.15	1.15	0.65	0.10	0.03
+0.05	0.05	0.02	1.00
+
+
+# Summer.
+0.0001	0.080	2.65	0.85	1.05
+1.15	1.15	0.65	0.10	0.03
+0.10	0.10	0.02	1.00
+
+
+# Fall.
+0.0001	0.90	2.65	0.85	1.05
+1.15	1.15	0.65	0.10	0.02
+0.10	0.10	0.02	1.00
+
+
+# Snow.
+0.0001	0.90	2.65	0.55	0.55
+1.15	1.15	0.65	0.10	0.03
+0.02	0.02	0.02	1.00
+
+
+[small_radius]
+
+# Winter.
+0.	2.e-5	5.e-5	5.e-5	10.e-5
+5.e-5	5.e-5	10.e-5	10.e-5	0
+5.e-5	5.e-5	0.	10.e-5
+
+# Spring.
+0.	2.e-5	5.e-5	2.e-5	5.e-5
+5.e-5	5.e-5	10.e-5	10.e-5	0
+2.e-5	2.e-5	0.	10.e-5
+
+# Summer.
+0.	2.e-5	5.e-5	2.e-5	5.e-5
+5.e-5	5.e-5	10.e-5	10.e-5	0
+2.e-5	2.e-5	0.	10.e-5
+
+# Fall.
+0.	2.e-5	5.e-5	2.e-5	5.e-5
+5.e-5	5.e-5	10.e-5	10.e-5	0
+2.e-5	2.e-5	0.	10.e-5
+
+# Snow.
+0.	2.e-5	5.e-5	5.e-5	10.e-5
+5.e-5	5.e-5	10.e-5	10.e-5	0
+5.e-5	5.e-5	0.	10.e-5
+
+
+[large_radius]
+
+# Winter.
+0.	2.e-3	5.e-3	5.e-3	10.e-3
+5.e-3	5.e-3	10.e-3	10.e-3	0
+5.e-3	5.e-3	0.	10.e-3
+
+# Spring.
+0.	2.e-3	5.e-3	2.e-3	5.e-3
+5.e-3	5.e-3	10.e-3	10.e-3	0
+2.e-3	2.e-3	0.	10.e-3
+
+# Summer.
+0.	2.e-3	5.e-3	2.e-3	5.e-3
+5.e-3	5.e-3	10.e-3	10.e-3	0
+2.e-3	2.e-3	0.	10.e-3
+
+# Fall.
+0.	2.e-3	5.e-3	2.e-3	5.e-3
+5.e-3	5.e-3	10.e-3	10.e-3	0
+2.e-3	2.e-3	0.	10.e-3
+
+# Snow.
+0.	2.e-3	5.e-3	5.e-3	10.e-3
+5.e-3	5.e-3	10.e-3	10.e-3	0
+5.e-3	5.e-3	0.	10.e-3
+
+
+[zhang_alpha]
+
+100.0	1.0	0.6	1.1	0.8
+0.8	0.8	25.0	50.0	50.0
+1.2	1.2	50.0	1.5
+
+
+[zhang_gamma]
+
+0.50	0.56	0.58	0.56	0.56
+0.56	0.56	0.54	0.54	0.54
+0.54	0.54	0.54	0.56
+
+
+
+# GLCF categories:
+# Value       Description
+#
+# [0]         Water (and Goode's interrupted space)
+# [1]         Evergreen Needleleaf Forest
+# [2]         Evergreen Broadleaf Forest
+# [3]         Deciduous Needleleaf Forest
+# [4]         Deciduous Broadleaf Forest
+# [5]         Mixed Forest
+# [6]         Woodland
+# [7]         Wooded Grassland
+# [8]         Closed Shrubland
+# [9]         Open Shrubland
+# [10]        Grassland
+# [11]        Cropland
+# [12]        Bare Ground
+# [13]        Urban and Built-up
+#
+# Zhang 1999 categories:
+#
+# (1) Evergreen Needleleaf trees
+# (2) Evergreen Broadleaf trees
+# (3) Deciduous Needleleaf trees
+# (4) Deciduous Broadlea trees
+# (5) Mixed broadleaf and needleleaf trees
+# (6) Grass
+# (7) Crops, mixed farming
+# (8) Desert
+# (9) Tundra
+# (10) Shrubs and interrupted woodlands
+# (11) Wet land with plants
+# (12) Ice cap and glacier
+# (13) Inland water
+# (14) Ocean
+# (15) Urban
+#
+# Aggregation:
+#
+# [0]  = (14)
+# [1]  = (1)
+# [2]  = (2)
+# [3]  = (3)
+# [4]  = (4)
+# [5]  = (5)
+# [6]  = (5)
+# [7]  = (10)+(9)
+# [8]  = (10)
+# [9]  = (9)
+# [10] = (6)
+# [11] = (7)
+# [12] = (8)+(12)
+# [13] = (15)
+

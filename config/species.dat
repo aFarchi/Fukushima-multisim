@@ -1,0 +1,320 @@
+#--------------------------------------------------------------------
+#####################################################################
+#--------------------------------------------------------------------
+[species]
+
+# Name of gaseous species.
+ I2
+
+
+
+[aerosol_species]
+
+#Name of the chemical species part of the chemical composition of the PMs.
+Cs137
+
+
+
+
+#--------------------------------------------------------------------
+#####################################################################
+#--------------------------------------------------------------------
+[henry]
+# species	    effective Henry's constant (mol/L/atm)
+I2	  		7.    #3.02
+
+
+
+
+
+[diffusivity]
+# species	    diffusivity (cm^2/s)
+I2	  		0.1089
+
+
+
+
+
+[dissolution_heat]	#For "monodispersed-ph" and "polydispersed-ph" only.
+# species	    dissolution heat (kcal/mol) at 298K
+I2	  		25
+
+
+
+
+
+#--------------------------------------------------------------------
+#####################################################################
+#--------------------------------------------------------------------
+[constant]
+
+# Scavenging is applied above the following threshold over rain [mm/h].
+Scavenging_rain_threshold: 1.
+
+# The following constant values are given to the
+# below-cloud scavenging coefficients of gases.
+
+# species        scavenging_constant (1/s)
+all                  7.e-4
+I2	
+
+
+
+
+
+[constant_aer]
+
+# The following constant values are given to the
+# below-cloud scavenging coefficients of PMs.
+
+# bin index       scavenging_constant_aer (1/s)
+    all	             7.e-4
+     0
+     1
+     2
+     3
+     4
+
+
+
+[constant_incloud]
+
+# The following constant values are given to the
+# in-cloud scavenging coefficients of gases.
+
+# species      scavenging_constant_in (1/s)
+#    all	     7.e-4
+    I2	             7.e-4	
+
+
+
+
+
+[constant_incloud_aer]
+
+# The following constant values are given to the
+# in-cloud scavenging coefficients of PMs.
+
+# bin index       scavenging_constant_in_aer (1/s)
+      all	     7.e-4
+     0	             0	
+     1	             0	
+     2	             0	
+     3	             0	
+     4	             0	
+
+
+
+#--------------------------------------------------------------------
+[rain_dependent]
+
+# The following parameterisations are available for the 
+# below-cloud scavenging coefficient of gases :
+# Chang_MP, Chang_SS, Asman, Mizak, Calderon_SS, Calderon_MM, 
+# Calderon_FL or User_defined (a parameterisation of the form "a * I^b" 
+# defined by the user).
+
+# species        name_scav_coef         constant_a         constant_b
+all	           User_defined             8.4e-5	      0.79
+I2	
+
+
+
+
+
+[rain_dependent_aer]
+
+# The following parameterisations are available for the 
+# below-cloud scavenging coefficient of PMs :
+# ApSimon, Sparmacher_023, Sparmacher_046, Sparmacher_098, 
+# Sparmacher_216, Mircea_Urban_Jaenicke, Mircea_Rural_Jaenicke, 
+# Mircea_Marine_Jaenicke, Mircea_RC_Jaenicke, Baklanov_less3micron, 
+# Baklanov_less20micron, Baklanov_more20micron, Brandt, Laakso,
+# Andronache_Urban_Jaenicke, Andronache_Rural_Jaenicke, Andronache_Marine_Jaenicke, 
+# Andronache_RC_Jaenicke, Andronache_Martine_Raes, Andronache_Martine_Covert, 
+# Andronache_Alpine_Weingartner, Loosmore_Cederwall, Andronache_neutral_UFP, 
+# Chate, Henzing_005, Henzing_023, Henzing_046, Henzing_098, Henzing_216, 
+# Calderon_SS_averaged, Calderon_MM_averaged, Calderon_FL_averaged 
+# or User_defined (a parameterisation of the form "a * I^b" defined by the user).
+
+# bin index        name_scav_coef_aer        constant_aer_a         constant_aer_b
+  all               $rain_dependent_aer$
+     0
+     1
+     2
+     3
+     4
+
+
+
+[water_dependent]
+
+# The following parameterisations are available for the 
+# in-cloud scavenging coefficient of gases :
+# Scott, Maryon_convective, Maryon_dynamic, Roselle_Binkowski, 
+# Simpson_SO2,  Simpson_HNO3 (for HNO3, NH3 and H2O2),  Simpson_HCHO,  
+# Simpson_PM (for SO4_2-, NO3_- fine, NH4_+, PPM_2.5, NO3_- coarse, PPM coarse), 
+# CAMx, Ragland, Ellenton, Jylha_Cs134, Jylha_Cs137, Jylha_I131, Okita, Kitada
+# or User_defined (a parameterisation of the form "a * I^b" defined by the user).
+
+# species        name_scav_coef_in         constant_in_a       constant_in_b
+all	           Scott
+I2	           Scott
+
+
+
+
+
+[water_dependent_aer]
+
+# The following parameterisations are available for the 
+# in-cloud scavenging coefficient of PMs :
+# Scott, Maryon_convective, Maryon_dynamic, Roselle_Binkowski,
+# Simpson_SO2,  Simpson_HNO3 (for HNO3, NH3 and H2O2),  Simpson_HCHO,  
+# Simpson_PM (for SO4_2-, NO3_- fine, NH4_+, PPM_2.5, NO3_- coarse, PPM coarse), 
+# CAMx, Ragland, Ellenton, Jylha_Cs134, Jylha_Cs137, Jylha_I131, Okita, Kitada
+# or User_defined (a parameterisation of the form "a * I^b" defined by the user).
+
+# bin index      name_scav_coef_in_aer     constant_in_aer_a     constant_in_aer_b
+    all	           $water_dependent_aer$
+     0             Scott
+     1	           Scott
+     2	           Scott
+     3	           Scott
+     4	           Scott
+
+
+
+#--------------------------------------------------------------------
+[pudykiewicz]
+
+# In-cloud scavenging according to Pudykiewicz is applied above the 
+# following threshold value for the relative humidity.
+Pudykiewicz_threshold: 0.8
+
+# The following values are given to the constant
+# in the Pudykiewicz formula for in-cloud scavenging.
+# This option is made available for gases, as well as, PMs.
+
+# species       Pudykiewicz_constant (1/s)
+    all	     		3.5e-5
+    I2	             	3.5e-5
+
+
+
+
+
+[pudykiewicz_aer]
+
+Pudykiewicz_aer_threshold: 0.8
+
+# bin index       Pudykiewicz_constant_aer (1/s)
+    all	     		3.5e-5
+     0	             	3.5e-5	
+     1	             	3.5e-5	
+     2	             	3.5e-5	
+     3	             	3.5e-5	
+     4	             	3.5e-5	
+
+#--------------------------------------------------------------------
+[monodispersed]
+
+# The following parameterisations are available for the 
+# representative diameter of raindrops : 
+# LP (Laws-Parsons), Best, Atlas, Blanchard, Jones, SS (Sekhon-Srivastava), 
+# Slinn, Ulbrich_thi (thunderstorm, instant.), Ulbrich_shi (shower, instant.), 
+# Ulbrich_wi (widespread, instant.), Willis, CT (Coutinho-Tomas).
+
+# name_rep_diam
+# LP
+ Atlas
+#Ulbrich_wi
+
+[polydispersed]
+
+# The following parameterisations are available for the RSD : 
+# MP (Marshall-Palmer), Best, JTW-th (Joss-Thams-Waldvogel_thunderstorm), 
+# JTW_w (widespread), JTW_dr (drizzle), SS (Sekhon-Srivastava), Wickerts, 
+# Ulbrich_wl (widespread, long), Ulbrich_thi (thunderstorm, instantaneous), 
+# Ulbrich_shi (shower, instantaneous), Ulbrich_wi (widespread, instantaneous), 
+# Ihara, WT (Willis-Tattelman), MM (Massambani-Morales), CT (Coutinho-Tomas), 
+# Delrieu, Cerro_EXP (exponential), DeWolf, Chapon, FL (Feingold-Levin), 
+# Cerro_LN (log-normal), Ochou, Harikumar, SL (Sekine-Lind, Weibull).
+
+# name_RSD
+# Cerro_EXP
+Ulbrich_thi
+# SS
+
+
+#--------------------------------------------------------------------
+[monodispersed_slinn]
+
+# The following parameterisations are available for the 
+# representative diameter of raindrops : 
+# LP (Laws-Parsons), Best, Atlas, Blanchard, Jones, SS (Sekhon-Srivastava), 
+# Slinn, Ulbrich_thi (thunderstorm, instant.), Ulbrich_shi (shower, instant.), 
+# Ulbrich_wi (widespread, instant.), Willis, CT (Coutinho-Tomas).
+
+# name_rep_diam
+$monodispersed_slinn$
+
+
+#--------------------------------------------------------------------
+[monodispersed_mod]
+
+# The following parameterisations are available for the 
+# representative diameter of raindrops : 
+# LP (Laws-Parsons), Best, Atlas, Blanchard, Jones, SS (Sekhon-Srivastava), 
+# Slinn, Ulbrich_thi (thunderstorm, instant.), Ulbrich_shi (shower, instant.), 
+# Ulbrich_wi (widespread, instant.), Willis, CT (Coutinho-Tomas).
+
+# name_rep_diam
+$monodispersed_mod$
+
+[polydispersed_slinn]
+
+# The following parameterisations are available for the RSD : 
+# MP (Marshall-Palmer), Best, JTW-th (Joss-Thams-Waldvogel_thunderstorm), 
+# JTW_w (widespread), JTW_dr (drizzle), SS (Sekhon-Srivastava), Wickerts, 
+# Ulbrich_wl (widespread, long), Ulbrich_thi (thunderstorm, instantaneous), 
+# Ulbrich_shi (shower, instantaneous), Ulbrich_wi (widespread, instantaneous), 
+# Ihara, WT (Willis-Tattelman), MM (Massambani-Morales), CT (Coutinho-Tomas), 
+# Delrieu, Cerro_EXP (exponential), DeWolf, Chapon, FL (Feingold-Levin), 
+# Cerro_LN (log-normal), Ochou, Harikumar, SL (Sekine-Lind, Weibull).
+
+# name_RSD
+$polydispersed_slinn$
+
+
+[polydispersed_mod]
+
+# The following parameterisations are available for the RSD : 
+# MP (Marshall-Palmer), Best, JTW-th (Joss-Thams-Waldvogel_thunderstorm), 
+# JTW_w (widespread), JTW_dr (drizzle), SS (Sekhon-Srivastava), Wickerts, 
+# Ulbrich_wl (widespread, long), Ulbrich_thi (thunderstorm, instantaneous), 
+# Ulbrich_shi (shower, instantaneous), Ulbrich_wi (widespread, instantaneous), 
+# Ihara, WT (Willis-Tattelman), MM (Massambani-Morales), CT (Coutinho-Tomas), 
+# Delrieu, Cerro_EXP (exponential), DeWolf, Chapon, FL (Feingold-Levin), 
+# Cerro_LN (log-normal), Ochou, Harikumar, SL (Sekine-Lind, Weibull).
+
+# name_RSD
+$polydispersed_mod$
+
+
+#--------------------------------------------------------------------
+#####################################################################
+#--------------------------------------------------------------------
+[half_life]
+
+# Half-lives in days, put 0 for species without decay.
+I2  8.04
+
+
+
+[half_life_aerosol]
+
+# Half-lives in days, put 0 for species without decay (à vérifier ???).
+
+Cs137	11000	# about 30 years
+
