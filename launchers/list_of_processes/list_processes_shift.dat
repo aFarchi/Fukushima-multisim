@@ -1,0 +1,26 @@
+# list of processes
+RESOLUTION: 0d05
+
+SOURCE: Winiarek_d22
+
+PSD_SOURCE: Jaenicke_Remote_continental_AP
+
+METEO: WRF
+
+KZ: TM
+
+RAIN: Radar
+
+ICS: water_dependent_aer
+
+BCS: rain_dependent_aer
+
+DRY_DEP: constant #(Compute_deposition_aerosol=no)
+
+rain_dependent_aer: IRSN
+water_dependent_aer: IRSN
+
+DX: 0p0#m1p0,0p0,1p0
+DY: m1p0,0p0,1p0
+DZ: 0p0#m1p0,0p0,1p0
+DT: m1p0,0p0,1p0
