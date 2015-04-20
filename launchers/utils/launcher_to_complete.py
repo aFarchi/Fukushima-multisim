@@ -2,12 +2,6 @@
 
 import os
 import sys
-import string
-import subprocess
-import glob
-import re
-from datetime import *
-import platform
 import utils_synchronize_heavy_data as ushd
 import utils_write_source as uws
 import utils_write_config as uwc
@@ -23,14 +17,6 @@ def myrun_test(command):
 	print command
 	if status != 0:
 		sys.exit(status)
-
-####################################################
-# Location of the work directory, on each
-# machine and location of the final save
-# directory on the RAID
-
-# Import machine where the program is running
-#machine = platform.node()
 
 #####################################################
 # Read the list of parameters
@@ -68,8 +54,7 @@ poly_dir = '$poly_dir'
 suffix_proc = uws.fn_of_shifts(dx_proc,dy_proc,dz_proc,dt_proc)
 
 #####################################################
-# Synchronises the heavy data
-ushd.synchronize_heavy_data(work_dir, dir_reference)
+# Writes the source term for the appropriate shift of the source
 DX_Unit = 1.
 DY_Unit = 1.
 DZ_Unit = 1.
@@ -96,16 +81,16 @@ myrun('rm -fr  ' + work_dir + relative_path)
 for rep in ['nesting', 'dry', 'wet/InCloud', 'wet/BelowCloud']:
 	myrun('mkdir -p ' + work_dir + relative_path + '/' + rep)
 
-
-# Writing the config files
+#####################################################
+# Writes the config files
 uwc.write_config_general(config_dir, work_dir, relative_path, Reso_proc, BCS_proc, ICS_proc, DryDep_proc)
 uwc.write_config_data(config_dir, work_dir, relative_path, Met_proc, Source_proc, PSD_Source_proc, suffix_proc, Reso_proc, Kz_proc, Rain_proc, DryDep_proc)
 uwc.write_config_saver(config_dir, work_dir, relative_path, Reso_proc)
 uwc.write_config_species(config_dir, work_dir, relative_path, BCS_proc, BCSunder_proc, ICS_proc, ICSunder_proc)
 uwc.write_config_land(config_dir, work_dir, relative_path, Reso_proc)
 
-# lauching of the program
-# Determine the OS
+#####################################################
+# Launches of the program
 os_name = os.environ['OS_NAME']
 if os_name[0:8]=='debian-5':
 	myrun_test(poly_dir + 'processing/decay/polair3d-decay-lenny '+ work_dir + relative_path + '/general.cfg')
@@ -122,8 +107,9 @@ else:
 	print 'No program for the os '+os_name
 	sys.exit(1)
 
-# if the run is successful
-# Save to the local hard drive
+#####################################################
+# If the run is successful
+# Saves to the local hard drive
 myrun('hostname')
 myrun('mkdir -p '+save_dir+relative_path+'/')
 myrun_test('rm -rf '+save_dir+relative_path+'/')

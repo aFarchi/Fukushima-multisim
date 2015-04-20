@@ -29,7 +29,7 @@ synchronizer=$dir_launchers'utils/synchronizer.py'
 
 if [[ $1='' ]]
 then
-    session_name='sim-test'
+    session_name='sim-test-2'
 else
     session_name=$1
 fi
@@ -84,8 +84,12 @@ rm -f $synchronizer
 python utils/make_launcher.py $synchronizer_to_complete $synchronizer $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
 chmod +x $synchronizer
 
+echo 'Starting synchronizing heavy data ...'
+echo 'python '$synchronizer' RESOLUTION='$resolution' SOURCE='$source_term' PSD_SOURCE='$psd_source' METEO='$meteo' KZ='$kz' RAIN='$rain' ICS='$ics' ICSunder='$icsunder' BCS='$bcs' BCSunder='$bcsunder' DRY_DEP='$dry_dep' DX='$dx' DY='$dy' DZ='$dz' DT='$dt' > '$logfile
+python $synchronizer RESOLUTION=$resolution SOURCE=$source_term PSD_SOURCE=$psd_source METEO=$meteo KZ=$kz RAIN=$rain ICS=$ics ICSunder=$icsunder BCS=$bcs BCSunder=$bcsunder DRY_DEP=$dry_dep DX=$dx DY=$dy DZ=$dz DT=$dt > $logfile
+
 echo 'Starting algorithm ...'
 echo 'python '$launcher' RESOLUTION='$resolution' SOURCE='$source_term' PSD_SOURCE='$psd_source' METEO='$meteo' KZ='$kz' RAIN='$rain' ICS='$ics' ICSunder='$icsunder' BCS='$bcs' BCSunder='$bcsunder' DRY_DEP='$dry_dep' DX='$dx' DY='$dy' DZ='$dz' DT='$dt' > '$logfile
 
-#python $launcher RESOLUTION=$resolution SOURCE=$source_term PSD_SOURCE=$psd_source METEO=$meteo KZ=$kz RAIN=$rain ICS=$ics ICSunder=$icsunder BCS=$bcs BCSunder=$bcsunder DRY_DEP=$dry_dep DX=$dx DY=$dy DZ=$dz DT=$dt > $logfile
+python $launcher RESOLUTION=$resolution SOURCE=$source_term PSD_SOURCE=$psd_source METEO=$meteo KZ=$kz RAIN=$rain ICS=$ics ICSunder=$icsunder BCS=$bcs BCSunder=$bcsunder DRY_DEP=$dry_dep DX=$dx DY=$dy DZ=$dz DT=$dt > $logfile
 

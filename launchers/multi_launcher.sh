@@ -29,7 +29,7 @@ synchronizer=$dir_launchers'utils/synchronizer.py'
 
 if [[ $1='' ]]
 then
-    session_name='sim-test'
+    session_name='sim-test-2'
 else
     session_name=$1
 fi
@@ -64,9 +64,16 @@ fi
 
 if [[ $6='' ]]
 then
+    nodes_rest=$dir_launchers'list_of_nodes/nodes_om_rest.dat'
+else
+    nodes_rest=$6
+fi
+
+if [[ $7='' ]]
+then
 logfile=$dir_output$session_name'/log'
 else
-logfile=$dir_output$session_name'/'$6
+logfile=$dir_output$session_name'/'$7
 fi
 
 echo 'Creating output directory : '$dir_output$session_name
@@ -88,6 +95,10 @@ rm -f $synchronizer
 python utils/make_launcher.py $synchronizer_to_complete $synchronizer $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
 chmod +x $synchronizer
 
+echo 'Starting synchronizing heavy data ...'
+echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes_rest' --log='$logfile' run '$synchronizer
+algo start --argument-file=$file_processes_final --computer-file=$nodes_rest --log=$logfile run $synchronizer
+
 echo 'Starting algorithm ...'
 echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes' --log='$logfile' run '$launcher
-#algo start --argument-file=$file_processes_final --computer-file=$nodes --log=$logfile run $launcher
+algo start --argument-file=$file_processes_final --computer-file=$nodes --log=$logfile run $launcher
