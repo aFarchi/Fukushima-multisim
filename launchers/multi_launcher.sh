@@ -26,6 +26,7 @@ dir_launchers=$dir_work_fukushima'launchers/'
 file_processes_final=$dir_work_fukushima'/launchers/list_processes.dat'
 launcher=$dir_launchers'utils/launcher.py'
 synchronizer=$dir_launchers'utils/synchronizer.py'
+nodes_rest=$dir_launchers'list_of_nodes/nodes_om_rest.dat'
 
 if [[ $1='' ]]
 then
@@ -64,16 +65,9 @@ fi
 
 if [[ $6='' ]]
 then
-    nodes_rest=$dir_launchers'list_of_nodes/nodes_om_rest.dat'
-else
-    nodes_rest=$6
-fi
-
-if [[ $7='' ]]
-then
 logfile=$dir_output$session_name'/log'
 else
-logfile=$dir_output$session_name'/'$7
+logfile=$dir_output$session_name'/'$6
 fi
 
 echo 'Creating output directory : '$dir_output$session_name
@@ -82,18 +76,22 @@ cp $file_processes $dir_output$session_name
 
 echo 'Making list of processes to execute : '$file_processes
 rm -f $file_processes_final
-python utils/make_list_of_processes.py $file_processes $file_processes_final
+python $dir_launchers'utils/make_list_of_processes.py' $file_processes $file_processes_final
 cp $file_processes_final $dir_output$session_name
 
 echo 'Filling in launcher file : '$launcher_to_complete
 rm -f $launcher
-python utils/make_launcher.py $launcher_to_complete $launcher $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
+python $dir_launchers'utils/make_launcher.py' $launcher_to_complete $launcher $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
 chmod +x $launcher
 
 echo 'Filling in synchronizer file : '$synchronizer_to_complete
 rm -f $synchronizer
-python utils/make_launcher.py $synchronizer_to_complete $synchronizer $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
+python $dir_launchers'utils/make_launcher.py' $synchronizer_to_complete $synchronizer $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
 chmod +x $synchronizer
+
+echo 'Reading nodes list :'$nodes
+rm -f $nodes_rest
+python $dir_launchers'list_of_nodes/make_list_of_nodes_rest.py' $nodes $nodes_rest
 
 echo 'Starting synchronizing heavy data ...'
 echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes_rest' --log='$logfile' run '$synchronizer

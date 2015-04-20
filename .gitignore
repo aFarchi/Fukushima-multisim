@@ -8,6 +8,7 @@ reference_data/*
 launchers/utils/launcher.py
 launchers/utils/synchronizer.py
 launchers/list_processes.dat
+launchers/list_of_nodes/*rest.dat
 
 # Ignores temporary files 
 *~
