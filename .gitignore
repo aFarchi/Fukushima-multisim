@@ -4,6 +4,12 @@ output/*
 # Ignores reference data
 reference_data/*
 
+# Files created during processing
+launchers/utils/launcher.py
+
+# Ignores temporary files 
+*~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
