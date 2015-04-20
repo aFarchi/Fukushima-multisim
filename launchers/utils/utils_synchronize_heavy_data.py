@@ -1,7 +1,5 @@
 import os
 import sys
-import string
-import subprocess
 import platform
 
 def myrun(command):
