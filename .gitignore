@@ -6,6 +6,7 @@ reference_data/*
 
 # Files created during processing
 launchers/utils/launcher.py
+launchers/list_processes.dat
 
 # Ignores temporary files 
 *~
