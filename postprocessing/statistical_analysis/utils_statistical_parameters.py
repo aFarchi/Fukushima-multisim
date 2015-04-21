@@ -68,3 +68,40 @@ def relative8bias(X,Y):
 def bias_corrected(X,Y,scaling):
     return bias(X,Y)/scaling
 
+##########################################
+# Pearson's correlation coefficient
+
+def PCC(X,Y):
+    r,p = st.pearsonr(X,Y)
+    return r
+
+##########################################
+# BCRMS
+
+def BC_MSE(X,Y):
+    np.power( X - X.nanmean() ) - ( Y - Y.nanmean() , 2 ).nanmean()
+
+def BC_NMSE_corrected(X,Y,scaling):
+    return BC_MSE(X,Y)/scaling
+
+##########################################
+# Skill score
+
+def SSSr(X,Y):
+    r = PCC(X,Y)
+    sigmaX = np.sqrt( X.nanvar() )
+    sigmaY = np.sqrt( Y.nanvar() )
+
+    return 2. * ( 1. + r ) / ( sigmaX/sigmaY + sigmaY/sigmaX )**2
+
+def SSSb(X,Y,biasFunction,alpha=10.):
+    RB = biasFunction(X,Y)
+    return 1. / ( 1. + alpha*RB**2 )
+
+def SSSb_corrected(X,Y,scaling):
+    RB = bias_corrected(X,Y,scaling)
+    return 1. / ( 1. + alpha*RB**2 )
+
+# Total skill score
+def TSS(X,Y,scaling,mr=0.5):
+    return mr * SSSr(X,Y) + ( 1. - mr ) * SSSb_corrected(X,Y,scaling)
