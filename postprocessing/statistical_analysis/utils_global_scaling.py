@@ -30,7 +30,7 @@ def scalingByVariance(modelList):
     for model in modelList:
         data = np.fromfile
         var.append(data.nanvar())
-    return np.mean(var)
+    return np.nanmean(var)
 
 def scalingFM(modelList, level):
     area = []
@@ -46,7 +46,7 @@ def scalingFMmini(modelList):
     for model in modelList:
         data = np.fromfile(model)
         maxi = np.maximum( maxi, data )
-    return maxi.sum()
+    return maxi.nansum()
 
 def findNLevelsML(modelList, N, space='lin'):
     data = np.fromfile(modelList[0])
@@ -55,8 +55,8 @@ def findNLevelsML(modelList, N, space='lin'):
 
     for model in modelList:
         data = np.fromfile(model)
-        mini = np.min( [ mini , data.nanmin() ] )
-        maxi = np.min( [ maxi , data.nanmax() ] )
+        mini = np.nanmin( [ mini , data.nanmin() ] )
+        maxi = np.nanmax( [ maxi , data.nanmax() ] )
 
     if space=='lin':
         return np.linspace(mini, maxi, N)
