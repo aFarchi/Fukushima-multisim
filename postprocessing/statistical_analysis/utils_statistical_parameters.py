@@ -1,32 +1,7 @@
 import numpy as np
 import scipy.stats as st
 
-##########################################
-# Scalings
-
-def scalingByMean(modelList):
-    # returns the quadratic scaling of for a list of data from different models
-    # base on arithmetic mean
-    means = []
-    for model in modelList:
-        means.append(model.nanmean()**2)
-    return np.nanmean(means)
-
-def scalingByGeomMean(modelList):
-    # returns the quadratic scaling of for a list of data from different models
-    # based on geometric mean
-    means = []
-    for model in modelList:
-        means.append(model.nanmean()**2)
-    return st.gmean(means)
-
-def scalingByVariance(modelList):
-    # returns the quadratic scaling of for a list of data from different models
-    # based on variance
-    var = []
-    for model in modelList:
-        var.append(model.nanvar())
-    return np.mean(var)
+from utils_global_scaling import *
 
 ##########################################
 # RMS
@@ -44,12 +19,6 @@ def NMSE_corrected(X,Y,scale):
 ##########################################
 # FM
 
-def scalingFM(modelList, level):
-    area = []
-    for model in modelList:
-        area.append( (model>level).nansum() )
-    return np.nanmean(area)
-
 def FM(X,Y,level):
     return ( ( (X>level) * (Y>level) ).nansum() ) / ( ( (X>level) + (Y>level) ).nansum() )
 
@@ -58,12 +27,6 @@ def FM_corrected(X,Y,level,scaling):
 
 ##########################################
 # FMmini
-
-def scalingFMmini(modelList):
-    maxi = modelList[0]
-    for model in modelList:
-        maxi = np.maximum( maxi, model )
-    return maxi.sum()
 
 def FMmini(X,Y):
     return np.minimum(X,Y).sum() / np.maximum(X,Y).sum()
@@ -166,19 +129,6 @@ def repartitionFunction(X, levels):
 def findNLevels(X, N, space='lin'):
     mini = X.nanmin()
     maxi = X.nanmax()
-
-    if space=='lin':
-        return np.linspace(mini, maxi, N)
-    elif space=='log':
-        return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
-
-def findNLevelsML(modelList, N, space='lin'):
-    mini = modelList[0].nanmin()
-    maxi = modelList[0].nanmax()
-
-    for model in modelList:
-        mini = np.min( [ mini , model.nanmin() ] )
-        maxi = np.min( [ maxi , model.nanmax() ] )
 
     if space=='lin':
         return np.linspace(mini, maxi, N)
