@@ -18,7 +18,7 @@ class TimeScaling:
         Nlevels = levelsFM.size
         self.scalingFM = np.zeros(shape=(Nt,Nlevels))
         for i in xrange(Nlevels):
-            self.scalingFM[:,i] = ugs.scalingFM(modelList, levelsFM[i])
+            self.scalingFM[:,i] = uts.scalingFM(modelList, levelsFM[i])
 
     def chooseScaling(self, nt, choose='mean'):
         if choose=='mean':
@@ -84,7 +84,7 @@ class LinearTimeAnalyse:
         self.modelList = modelList
 
         if levelsFM is None:
-            self.levelsFM = uts.findNLevelsML(modelList,NlevelsFM,spaceFM)
+            self.levelsFM = uts.findNLevelsML(modelList,NlevelsFM,spaceFM,Nt,Nz,Ny,Nx)
         else:
             self.levelsFM = levelsFM
             a,NlevelsFM = levelsFM.shape
@@ -96,7 +96,7 @@ class LinearTimeAnalyse:
             NlevelsAlpha = levelsAlpha.size
 
         if levelsKS is None:
-            self.levelsKS = uts.findNLevelsML(modelList,NlevelsKS,spaceKS)
+            self.levelsKS = uts.findNLevelsML(modelList,NlevelsKS,spaceKS,Nt,Nz,Ny,Nx)
         else:
             self.levelsKS = levelsKS
 
@@ -158,7 +158,7 @@ class LinearTimeAnalyse:
                 
     def performAnalyse(self, printLog=True):
         Nmodels = self.modelList.size
-        print('Starting analyse...')
+        print('Starting linear time analyse...')
         print('Nmodels = '+str(Nmodels))
         
         for i in xrange(Nmodels):
@@ -179,6 +179,7 @@ class LogTimeAnalyseResult:
         self.geomBias = np.zeros(shape=(Nmodels,Nmodels, Nt))
         self.PCClog   = np.zeros(shape=(Nmodels,Nmodels, Nt))
         self.KSlog    = np.zeros(shape=(Nmodels,Nmodels, Nt))
+        self.Nt       = Nt
         
     def tofile(self,fileName):
         f = open(fileName, 'w')
@@ -205,11 +206,11 @@ class LogTimeAnalyse:
         self.modelList = modelList
         
         if levelsKS is None:
-            self.levelsKS = findNLevelsML(modelList,NlevelsKS,spaceKS)
+            self.levelsKS = uts.findNLevelsML(modelList,NlevelsKS,spaceKS,Nt,Nz,Ny,Nx)
         else:
             self.levelsKS = levelsKS
             
-        self.results = LogAnalyseResult(modelList.size)
+        self.results = LogAnalyseResult(modelList.size,Nt)
         self.field1 = 0
         self.field2 = 0                
         self.Nt = Nt
@@ -235,7 +236,7 @@ class LogTimeAnalyse:
                                                                                                                                                     
     def performAnalyse(self, printLog=True):
         Nmodels = self.modelList.size
-        print('Starting analyse...')
+        print('Starting logarithmic time analyse...')
         print('Nmodels = '+str(Nmodels))
 
         for i in xrange(Nmodels):

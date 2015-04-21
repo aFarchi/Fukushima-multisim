@@ -143,7 +143,7 @@ class GlobalLinearAnalyse:
                 
     def performAnalyse(self, printLog=True):
         Nmodels = self.modelList.size
-        print('Starting analyse...')
+        print('Starting linear global analyse...')
         print('Nmodels = '+str(Nmodels))
         
         for i in xrange(Nmodels):
@@ -210,7 +210,7 @@ class GlobalLogAnalyse:
                                                                                                                                                     
     def performAnalyse(self, printLog=True):
         Nmodels = self.modelList.size
-        print('Starting analyse...')
+        print('Starting logarithmic global analyse...')
         print('Nmodels = '+str(Nmodels))
 
         for i in xrange(Nmodels):
