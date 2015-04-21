@@ -80,7 +80,7 @@ class GlobalLinearAnalyse:
         self.modelList = modelList
 
         if levelsFM is None:
-            self.levelsFM = findNLevels(modelList,NlevelsFM,spaceFM)
+            self.levelsFM = ugs.findNLevelsML(modelList,NlevelsFM,spaceFM)
         else:
             self.levelsFM = levelsFM
             NlevelsFM = levelsFM.size
@@ -92,12 +92,12 @@ class GlobalLinearAnalyse:
             NlevelsAlpha = levelsAlpha.size
 
         if levelsKS is None:
-            self.levelsKS = findNLevelsML(modelList,NlevelsKS,spaceKS)
+            self.levelsKS = ugs.findNLevelsML(modelList,NlevelsKS,spaceKS)
         else:
             self.levelsKS = levelsKS
 
-        self.scaling = Scaling(modelList,self.levelsFM)
-        self.results = LinearAnalyseResult(modelList.size,NlevelsFM,NlevelsAlpha)
+        self.scaling = GlobalScaling(modelList,self.levelsFM)
+        self.results = GlobalLinearAnalyseResult(modelList.size,NlevelsFM,NlevelsAlpha)
         self.chooseScaling = chooseScaling
         self.field1 = 0
         self.field2 = 0
@@ -188,11 +188,11 @@ class GlobalLogAnalyse:
         self.modelList = modelList
         
         if levelsKS is None:
-            self.levelsKS = findNLevelsML(modelList,NlevelsKS,spaceKS)
+            self.levelsKS = ugs.findNLevelsML(modelList,NlevelsKS,spaceKS)
         else:
             self.levelsKS = levelsKS
             
-        self.results = LogAnalyseResult(modelList.size)
+        self.results = GlobalLogAnalyseResult(modelList.size)
         self.field1 = 0
         self.field2 = 0                
         
