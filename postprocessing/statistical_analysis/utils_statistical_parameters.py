@@ -126,16 +126,19 @@ def SSSr(X,Y):
 
     return 2. * ( 1. + r ) / ( sigmaX/sigmaY + sigmaY/sigmaX )**2
 
-def SSSb(X,Y,biasFunction,alpha=10.):
-    RB = biasFunction(X,Y)
+def SSSb(X,Y,alpha=10.):
+    RB = relativeBias(X,Y)
     return 1. / ( 1. + alpha*RB**2 )
 
-def SSSb_corrected(X,Y,scaling):
+def SSSb_corrected(X,Y,scaling,alpha=10.):
     RB = bias_corrected(X,Y,scaling)
     return 1. / ( 1. + alpha*RB**2 )
 
 # Total skill score
-def TSS(X,Y,scaling,mr=0.5):
+def TSS(X,Y,mr=0.5):
+    return mr * SSSr(X,Y) + ( 1. - mr ) * SSSb(X,Y)
+
+def TSS_corrected(X,Y,scaling,mr=0.5):
     return mr * SSSr(X,Y) + ( 1. - mr ) * SSSb_corrected(X,Y,scaling)
 
 ##########################################
@@ -161,14 +164,27 @@ def repartitionFunction(X, levels):
     return function
 
 def findNLevels(X, N, space='lin'):
-    mini = X.min()
-    maxi = X.max()
+    mini = X.nanmin()
+    maxi = X.nanmax()
 
-    if space=='lin'
+    if space=='lin':
         return np.linspace(mini, maxi, N)
-    else if space=='log'
+    elif space=='log':
         return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
 
+def findNLevelsML(modelList, N, space='lin'):
+    mini = modelList[0].nanmin()
+    maxi = modelList[0].nanmax()
+
+    for model in modelList:
+        mini = np.min( [ mini , model.nanmin() ] )
+        maxi = np.min( [ maxi , model.nanmax() ] )
+
+    if space=='lin':
+        return np.linspace(mini, maxi, N)
+    elif space=='log':
+        return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
+    
 ##########################################
 # Kolmogorov-Smirnov test
 
