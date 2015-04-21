@@ -57,19 +57,31 @@ def FMS_corrected(X,Y,level,scaling):
     return ( ( (X>level) * (Y>level) ).nansum() ) / scaling
 
 ##########################################
-# FMT
+# FMTmini
 
-def scalingFMT(modelList):
+def scalingFMTmini(modelList):
     maxi = modelList[0]
     for model in modelList:
         maxi = np.maximum( maxi, model )
     return maxi.sum()
 
-def FMT(X,Y):
+def FMTmini(X,Y):
     return np.minimum(X,Y).sum() / np.maximum(X,Y).sum()
 
-def FMT_corrected(X,Y,scaling):
+def FMTmini_corrected(X,Y,scaling):
     return np.minimum(X,Y).sum() / scaling
+
+##########################################
+# FMT
+
+def scalingFMT(modelList,level):
+    return scalingFMS(modelList, level)
+
+def FMT(X,Y,level):
+    return FMS(X,Y,level)
+
+def FMT_corrected(X,Y,level,scaling):
+    return FMS_corrected(X,Y,level,scaling)
 
 ##########################################
 # Arithmetic Bias
