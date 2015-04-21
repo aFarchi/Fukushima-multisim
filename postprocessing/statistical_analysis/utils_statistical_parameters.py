@@ -42,60 +42,33 @@ def NMSE_corrected(X,Y,scale):
     return MSE(X,Y) / scale
 
 ##########################################
-# FMS
+# FM
 
-def scalingFMS(modelList, level):
+def scalingFM(modelList, level):
     area = []
     for model in modelList:
         area.append( (model>level).nansum() )
     return np.nanmean(area)
 
-def FMS(X,Y,level):
+def FM(X,Y,level):
     return ( ( (X>level) * (Y>level) ).nansum() ) / ( ( (X>level) + (Y>level) ).nansum() )
 
-def FMS_corrected(X,Y,level,scaling):
+def FM_corrected(X,Y,level,scaling):
     return ( ( (X>level) * (Y>level) ).nansum() ) / scaling
 
 ##########################################
-# FMT
+# FMmini
 
-def scalingFMT(modelList,level):
-    return scalingFMS(modelList, level)
-
-def FMT(X,Y,level):
-    return FMS(X,Y,level)
-
-def FMT_corrected(X,Y,level,scaling):
-    return FMS_corrected(X,Y,level,scaling)
-
-##########################################
-# FMSmini
-
-def scalingFMSmini(modelList):
+def scalingFMmini(modelList):
     maxi = modelList[0]
     for model in modelList:
         maxi = np.maximum( maxi, model )
     return maxi.sum()
 
-def FMSmini(X,Y):
+def FMmini(X,Y):
     return np.minimum(X,Y).sum() / np.maximum(X,Y).sum()
 
-def FMSmini_corrected(X,Y,scaling):
-    return np.minimum(X,Y).sum() / scaling
-
-##########################################
-# FMTmini
-
-def scalingFMTmini(modelList):
-    maxi = modelList[0]
-    for model in modelList:
-        maxi = np.maximum( maxi, model )
-    return maxi.sum()
-
-def FMTmini(X,Y):
-    return np.minimum(X,Y).sum() / np.maximum(X,Y).sum()
-
-def FMTmini_corrected(X,Y,scaling):
+def FMmini_corrected(X,Y,scaling):
     return np.minimum(X,Y).sum() / scaling
 
 ##########################################
