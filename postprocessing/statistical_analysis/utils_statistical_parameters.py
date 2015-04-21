@@ -4,7 +4,7 @@ import scipy.stats as st
 ##########################################
 # Scalings
 
-def scaling_by_mean(modelList):
+def scalingByMean(modelList):
     # returns the quadratic scaling of for a list of data from different models
     # base on arithmetic mean
     means = []
@@ -12,7 +12,7 @@ def scaling_by_mean(modelList):
         means.append(model.nanmean()**2)
     return np.nanmean(means)
 
-def scaling_by_geom_mean(modelList):
+def scalingByGeomMean(modelList):
     # returns the quadratic scaling of for a list of data from different models
     # based on geometric mean
     means = []
@@ -20,7 +20,7 @@ def scaling_by_geom_mean(modelList):
         means.append(model.nanmean()**2)
     return st.gmean(means)
 
-def scaling_by_variance(modelList):
+def scalingByVariance(modelList):
     # returns the quadratic scaling of for a list of data from different models
     # based on variance
     var = []
@@ -44,7 +44,7 @@ def NMSE_corrected(X,Y,scale):
 ##########################################
 # FMS
 
-def scaling_FMS(modelList, level):
+def scalingFMS(modelList, level):
     area = []
     for model in modelList:
         area.append( (model>level).nansum() )
@@ -57,16 +57,35 @@ def FMS_corrected(X,Y,level,scaling):
     return ( ( (X>level) * (Y>level) ).nansum() ) / scaling
 
 ##########################################
-# Bias
+# FMT
+
+def FMT(X,Y):
+    return np.minimum(X,Y).sum() / np.maximum(X,Y).sum()
+
+##########################################
+# Arithmetic Bias
 
 def bias(X,Y):
     return (Y.nanmean() - X.nanmean())
 
-def relative8bias(X,Y):
+def relativeBias(X,Y):
     return ( 2*bias(X,Y) ) / ( X.nanmean() + Y.nanmean() )
 
 def bias_corrected(X,Y,scaling):
     return bias(X,Y)/scaling
+
+##########################################
+# Geometric Bias
+
+def geomBias(X,Y):
+    Z = X / Y
+    return st.gmean(Z)    
+
+##########################################
+# Geometric mean variance
+
+def geomVar(X,Y):
+    return np.exp( np.power( np.log( X / Y ) , 2 ).nanmean() )
 
 ##########################################
 # Pearson's correlation coefficient
@@ -75,13 +94,17 @@ def PCC(X,Y):
     r,p = st.pearsonr(X,Y)
     return r
 
+def PCClog(X,Y):
+    r,p = st.personr(np.log(X),np.log(Y))
+    return r
+
 ##########################################
 # BCRMS
 
-def BC_MSE(X,Y):
+def BcMSE(X,Y):
     np.power( X - X.nanmean() ) - ( Y - Y.nanmean() , 2 ).nanmean()
 
-def BC_NMSE_corrected(X,Y,scaling):
+def BcNMSE_corrected(X,Y,scaling):
     return BC_MSE(X,Y)/scaling
 
 ##########################################
@@ -105,3 +128,46 @@ def SSSb_corrected(X,Y,scaling):
 # Total skill score
 def TSS(X,Y,scaling,mr=0.5):
     return mr * SSSr(X,Y) + ( 1. - mr ) * SSSb_corrected(X,Y,scaling)
+
+##########################################
+# Factor of excedence
+
+def FOEX(X,Y):
+    return 100. * ( (X > Y).nanmean() - 0.5 )
+
+##########################################
+# FAalpha band
+
+def FA(X,Y,alpha):
+    return ( ( X < alpha*Y ) * ( Y < alpha*X ) ).nanmean()
+
+##########################################
+# Repartition function
+
+def repartitionFunction(X, levels):
+    Nlevels = levels.size
+    function = np.zeros(Nlevels)
+    for i in xrange(Nlevels):
+        function[i] = ( X > levels[i] ).nanmean()
+    return function
+
+def findNLevels(X, N, space='lin'):
+    mini = X.min()
+    maxi = X.max()
+
+    if space=='lin'
+        return np.linspace(mini, maxi, N)
+    else if space=='log'
+        return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
+
+##########################################
+# Kolmogorov-Smirnov test
+
+def KSLevels(X,Y,levels):
+    repartX = repartitionFunction(X, levels)
+    repartY = repartitionFunction(Y, levels)
+    return np.abs( repartX - repartY ).max()
+
+def KS(X,Y,N=100,space='lin'):
+    levels = findNLevels( np.array([X,Y]), N, space)
+    return KSLevels(X,Y,levels)
