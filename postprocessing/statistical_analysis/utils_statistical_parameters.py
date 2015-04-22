@@ -1,17 +1,15 @@
 import numpy as np
 import scipy.stats as st
 
-#from utils_global_scaling import *
-
 ##########################################
 # RMS
 
 def MSE(X,Y):
     # returns the mean square error of X and Y as np arrays
-    return np.power(X-Y,2).nanmean()
+    return np.power(X-Y,2).mean()
 
 def NMSE(X,Y):
-    return MSE(X,Y) / ( X.nanmean() * Y.nanmean() )
+    return MSE(X,Y) / ( X.mean() * Y.mean() )
 
 def NMSE_corrected(X,Y,scale):
     return MSE(X,Y) / scale
@@ -20,10 +18,10 @@ def NMSE_corrected(X,Y,scale):
 # FM
 
 def FM(X,Y,level):
-    return ( ( (X>level) * (Y>level) ).nansum() ) / ( ( (X>level) + (Y>level) ).nansum() )
+    return ( ( (X>level) * (Y>level) ).sum() ) / ( ( (X>level) + (Y>level) ).sum() )
 
 def FM_corrected(X,Y,level,scaling):
-    return ( ( (X>level) * (Y>level) ).nansum() ) / scaling
+    return ( ( (X>level) * (Y>level) ).sum() ) / scaling
 
 ##########################################
 # FMmini
@@ -38,10 +36,10 @@ def FMmini_corrected(X,Y,scaling):
 # Arithmetic Bias
 
 def bias(X,Y):
-    return (Y.nanmean() - X.nanmean())
+    return (Y.mean() - X.mean())
 
 def relativeBias(X,Y):
-    return ( 2*bias(X,Y) ) / ( X.nanmean() + Y.nanmean() )
+    return ( 2*bias(X,Y) ) / ( X.mean() + Y.mean() )
 
 def bias_corrected(X,Y,scaling):
     return bias(X,Y)/scaling
@@ -57,7 +55,7 @@ def geomBias(X,Y):
 # Geometric mean variance
 
 def geomVar(X,Y):
-    return np.exp( np.power( np.log( X / Y ) , 2 ).nanmean() )
+    return np.exp( np.power( np.log( X / Y ) , 2 ).mean() )
 
 ##########################################
 # Pearson's correlation coefficient
@@ -74,18 +72,18 @@ def PCClog(X,Y):
 # BCRMS
 
 def BcMSE(X,Y):
-    np.power( X - X.nanmean() ) - ( Y - Y.nanmean() , 2 ).nanmean()
+    return np.power( ( X - X.mean() ) - ( Y - Y.mean() ) , 2 ).mean()
 
 def BcNMSE_corrected(X,Y,scaling):
-    return BC_MSE(X,Y)/scaling
+    return BcMSE(X,Y)/scaling
 
 ##########################################
 # Skill score
 
 def SSSr(X,Y):
     r = PCC(X,Y)
-    sigmaX = np.sqrt( X.nanvar() )
-    sigmaY = np.sqrt( Y.nanvar() )
+    sigmaX = np.sqrt( X.var() )
+    sigmaY = np.sqrt( Y.var() )
 
     return 2. * ( 1. + r ) / ( sigmaX/sigmaY + sigmaY/sigmaX )**2
 
@@ -108,13 +106,13 @@ def TSS_corrected(X,Y,scaling,mr=0.5):
 # Factor of excedence
 
 def FOEX(X,Y):
-    return 100. * ( (X > Y).nanmean() - 0.5 )
+    return 100. * ( (X > Y).mean() - 0.5 )
 
 ##########################################
 # FAalpha band
 
 def FA(X,Y,alpha):
-    return ( ( X < alpha*Y ) * ( Y < alpha*X ) ).nanmean()
+    return ( ( X < alpha*Y ) * ( Y < alpha*X ) ).mean()
 
 ##########################################
 # Repartition function
@@ -123,12 +121,12 @@ def repartitionFunction(X, levels):
     Nlevels = levels.size
     function = np.zeros(Nlevels)
     for i in xrange(Nlevels):
-        function[i] = ( X > levels[i] ).nanmean()
+        function[i] = ( X > levels[i] ).mean()
     return function
 
 def findNLevels(X, N, space='lin'):
-    mini = X.nanmin()
-    maxi = X.nanmax()
+    mini = X.min()
+    maxi = X.max()
 
     if space=='lin':
         return np.linspace(mini, maxi, N)

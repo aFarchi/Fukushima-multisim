@@ -97,7 +97,7 @@ class GlobalLinearAnalyse:
             self.levelsKS = levelsKS
 
         self.scaling = GlobalScaling(modelList,self.levelsFM)
-        self.results = GlobalLinearAnalyseResult(modelList.size,NlevelsFM,NlevelsAlpha)
+        self.results = GlobalLinearAnalyseResult(len(modelList),NlevelsFM,NlevelsAlpha)
         self.chooseScaling = chooseScaling
         self.field1 = 0
         self.field2 = 0
@@ -105,13 +105,13 @@ class GlobalLinearAnalyse:
     def performAnalyseOn(self, i, j):
         self.field1 = np.fromfile(self.modelList[i])
         self.field2 = np.fromfile(self.modelList[j])
-        
-        if not chooseScaling=='none':
-            self.results.MSE[i,j]    = NMSE_corrected(   self.field1 , self.field2 , self.scaling.chooseScaling(chooseScaling) )
+
+        if not self.chooseScaling=='none':
+            self.results.MSE[i,j]    = NMSE_corrected(   self.field1 , self.field2 , self.scaling.chooseScaling(self.chooseScaling) )
             self.results.FMmini[i,j] = FMmini_corrected( self.field1 , self.field2 , self.scaling.scalingFMmini )
-            self.results.bias[i,j]   = bias_corrected(   self.field1 , self.field2 , self.scaling.chooseScaling(chooseScaling) )
-            self.results.BcMSE[i,j]  = BcNMSE_corrected( self.field1 , self.field2 , self.scaling.chooseScaling(chooseScaling) )
-            self.results.TSS[i,j]    = TSS_corrected(    self.field1 , self.field2 , self.scaling.chooseScaling(chooseScaling) )
+            self.results.bias[i,j]   = bias_corrected(   self.field1 , self.field2 , self.scaling.chooseScaling(self.chooseScaling) )
+            self.results.BcMSE[i,j]  = BcNMSE_corrected( self.field1 , self.field2 , self.scaling.chooseScaling(self.chooseScaling) )
+            self.results.TSS[i,j]    = TSS_corrected(    self.field1 , self.field2 , self.scaling.chooseScaling(self.chooseScaling) )
             self.results.KS[i,j]     = KSLevels(         self.field1 , self.field2 , self.levelsKS )
             self.results.PCC[i,j]    = PCC(              self.field1 , self.field2 )
             self.results.FOEX[i,j]   = FOEX(             self.field1 , self.field2 )
@@ -142,14 +142,14 @@ class GlobalLinearAnalyse:
         self.field2 = 0
                 
     def performAnalyse(self, printLog=True):
-        Nmodels = self.modelList.size
+        Nmodels = len(self.modelList)
         print('Starting linear global analyse...')
         print('Nmodels = '+str(Nmodels))
         
         for i in xrange(Nmodels):
             for j in xrange(i):
                 if printLog:
-                    print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)'.')
+                    print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)+'.')
                 self.performAnalyseOn(i,j)
 
         return self.results
@@ -192,7 +192,7 @@ class GlobalLogAnalyse:
         else:
             self.levelsKS = levelsKS
             
-        self.results = GlobalLogAnalyseResult(modelList.size)
+        self.results = GlobalLogAnalyseResult(len(modelList))
         self.field1 = 0
         self.field2 = 0                
         
@@ -209,14 +209,14 @@ class GlobalLogAnalyse:
         self.field2 = 0
                                                                                                                                                     
     def performAnalyse(self, printLog=True):
-        Nmodels = self.modelList.size
+        Nmodels = len(self.modelList)
         print('Starting logarithmic global analyse...')
         print('Nmodels = '+str(Nmodels))
 
         for i in xrange(Nmodels):
             for j in xrange(i):
                 if printLog:
-                    print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)'.')
+                    print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)+'.')
                 self.performAnalyseOn(i,j)
                 
         return self.results
