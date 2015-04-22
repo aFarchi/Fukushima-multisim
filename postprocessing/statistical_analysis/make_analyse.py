@@ -84,16 +84,19 @@ for name in namesProcesses:
     print(name)
 
 ######################################
-# Analyse the first species
+# add here some function to coarse / filter the data ?
+
+######################################
+# Analyse Cs137_0_coarsed
 modelList = []
 for proc in namesProcesses:
-    modelList.append(proc+'/I2_coarsed.bin')
+    modelList.append(proc+'/Cs137_0_coarsed.bin')
 
 linGlobAnalyse = GlobalLinearAnalyse(modelList)
 linGlobAnalyse.performAnalyse()
-linGlobAnalyse.results.tofile(statDir+'I2_coarsed_lin_global_analyse.dat')
+linGlobAnalyse.results.tofile(statDir+'Cs137_0_coarsed_lin_global_analyse.dat')
 
 # Should add a filter here for zero data
 logGlobAnalyse = GlobalLogAnalyse(modelList)
 logGlobAnalyse.performAnalyse()
-logGlobAnalyse.results.tofile(statDir+'I2_coarsed_log_global_analyse.dat')
+logGlobAnalyse.results.tofile(statDir+'Cs137_0_coarsed_log_global_analyse.dat')
