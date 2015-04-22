@@ -97,11 +97,11 @@ for (name,n) in Species:
 # Catch name of processes
 namesProcesses = readListOfProcesses(fileProcesses)
 for proc in namesProcesses:
-    myrun('mkdir -p '+proc+'/to_analyse')
-    print(name)
-
-for proc in namesProcesses:
     proc = outputDir + sessionName + proc
+    myrun('mkdir -p '+proc+'/to_analyse')
+    #print(proc)
+
+    
 
 ######################################
 # Compute columns of air concentration
