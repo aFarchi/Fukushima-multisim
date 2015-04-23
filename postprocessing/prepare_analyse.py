@@ -29,16 +29,6 @@ def interpolate(array, axis, newN):
     return function(newX)
 
 ######################################
-# Read levels file
-def catchLevelsFromFile(fileName):
-    f = open(fileName, 'r')
-    lines = f.readLines()
-    levels = np.zeros(len(lines))
-    for i in xrange(len(lines)):
-        levels[i] = float(lines[i])
-    return levels
-
-######################################
 # Defines directions and file names
 
 outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
@@ -130,7 +120,7 @@ dimFields = []
 nameField = 'airColumn'
 dimField  = (2,3)
 (Nta,Nza,Nya,Nxa) = analyseResolution
-weights = np.diff(catchLevelsFromFile(fileLevels))
+weights = np.diff(readList.catchLevelsFromFile(fileLevels))
 
 # for gaz
 if computeGlobalScaling:

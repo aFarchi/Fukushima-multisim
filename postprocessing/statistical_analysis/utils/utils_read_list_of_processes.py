@@ -8,7 +8,14 @@ def fn_of_shifts(dx,dy,dz,dt):
     s += dt
     return s
                                                 
-
+def catchLevelsFromFile(fileName):
+    f = open(fileName, 'r')
+    lines = f.readLines()
+    levels = np.zeros(len(lines))
+    for i in xrange(len(lines)):
+        levels[i] = float(lines[i])
+    return levels
+                            
 def readListOfProcesses(fileName):
     f = open(fileName, 'r')
     lines = f.readlines()
