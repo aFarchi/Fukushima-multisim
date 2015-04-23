@@ -29,6 +29,16 @@ def interpolate(array, axis, newN):
     return function(newX)
 
 ######################################
+# Read levels file
+def catchLevelsFromFile(fileName):
+    f = open(fileName, 'r')
+    lines = f.readLines()
+    levels = np.zeros(len(lines))
+    for i in xrange(len(lines)):
+        levels[i] = float(lines[i])
+    return levels
+
+######################################
 # Defines directions and file names
 
 outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
@@ -36,6 +46,7 @@ sessionName   = 'sim-test/'
 statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
 fileFields    = statDir+'list_fields.dat'
+fileLevels    = outputDir+sessionName+'levels.dat'
 
 computeGlobalScaling = True
 analyseResolution = (1,1,32,32)
@@ -119,6 +130,7 @@ dimFields = []
 nameField = 'airColumn'
 dimField  = (2,3)
 (Nta,Nza,Nya,Nxa) = analyseResolution
+weights = np.diff(catchLevelsFromFile(fileLevels))
 
 # for gaz
 if computeGlobalScaling:
@@ -137,7 +149,7 @@ for proc in namesProcesses:
         data = np.fromfile(fileName, 'f')
         data = data.reshape((Nt,Nz,Ny,Nx))
         data = data[Nt-1,:,:,:]
-        airColumn = data.mean(axis=0)
+        airColumn = np.average(data,axis=0,weights=weights)
 
         if proc == namesProcesses[0]:
             fields.append(nameField + '_' + g)
@@ -199,7 +211,7 @@ for proc in namesProcesses:
             data = np.fromfile(fileName, 'f')
             data = data.reshape((Nt,Nz,Ny,Nx))
             data = data[Nt-1,:,:,:]
-            airColumnAer += data.mean(axis=0)
+            airColumnAer += np.average(data,axis=0,weights=weights)
             weight += 1.
         airColumnAer /= weight
         
