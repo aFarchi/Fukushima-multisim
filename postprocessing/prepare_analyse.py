@@ -28,10 +28,11 @@ def interpolate(array, axis, newN):
 ######################################
 # Defines directions and file names
 
-outputDir = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
-sessionName = 'sim-test/'
-statDir = outputDir+sessionName+'statistics/'
+outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
+sessionName   = 'sim-test/'
+statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
+fileFields    = statDir+'list_fields.dat'
 
 analyseResolution = (1,1,32,32)
 deltaT = 3600.
@@ -101,7 +102,9 @@ for proc in namesProcesses:
     myrun('mkdir -p '+proc+'/to_analyse')
     #print(proc)
 
-    
+######################################    
+# Prepare fields to analyse
+fields = []
 
 ######################################
 # Compute columns of air concentration
@@ -117,7 +120,12 @@ for proc in namesProcesses:
         data = data.reshape((Nt,Nz,Ny,Nx))
         data = data[Nt-1,:,:,:]
         airColumn = data.mean(axis=0)
-        fileName = proc + '/to_analyse/airColumn_' + g + '.npy'
+
+        nameField = 'airColumn_' + g
+        if proc == namesProcesses[0]:
+            fields.append(nameField)
+        
+        fileName = proc + '/to_analyse/' + nameField + '.npy'
         print ('Writing '+fileName+'...')
 
         if Ny > Nya:
@@ -141,7 +149,12 @@ for proc in namesProcesses:
             airColumnAer += data.mean(axis=0)
             weight += 1.
         airColumnAer /= weight
-        fileName = proc + '/to_analyse/airColumn_' + aer + '.npy'
+        
+        nameField = 'airColumn_' + aer
+        if proc == namesProcesses[0]:
+            fields.append(nameField)
+                        
+        fileName = proc + '/to_analyse/' + nameField + '.npy'
         print ('Writing '+fileName+'...')
 
         if Ny > Nya:
@@ -173,7 +186,10 @@ for proc in namesProcesses:
                 data = interpolate(data,1,Nxa)
             dep += data
 
-        fileName = proc + '/to_analyse/total_deposition_' + g + '.npy'
+        nameField = 'totalDeposition_' + g
+        if proc == namesProcesses[0]:
+            fields.append(nameField)
+        fileName = proc + '/to_analyse/' + nameField + '.npy'
         print ('Writing '+fileName+'...')
         np.save(fileName,dep)
                              
@@ -199,7 +215,17 @@ for proc in namesProcesses:
                         data = interpolate(data,1,Nxa)
                     dep += data
                     
-        fileName = proc + '/to_analyse/total_deposition_' + aer + '.npy'
+        nameField = 'totalDeposition_' + aer
+        if proc == namesProcesses[0]:
+            fields.append(nameField)
+        fileName = proc + '/to_analyse/' + nameField + '.npy'
         print ('Writing '+fileName+'...')
         np.save(fileName,dep)
                                                         
+######################################
+# Writes fields name
+
+f = open(fileFields, 'w')
+for field in fields:
+    f.write(field+'\n')
+f.close()
