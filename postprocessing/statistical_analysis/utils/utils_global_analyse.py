@@ -9,10 +9,10 @@ class GlobalScaling:
     class to save the scalings for a global analyse
     '''
 
-    def __init__(self, modelList, levelsFM):
-        self.mean = ugs.scalingByMean(modelList)
-        self.geomMean = ugs.scalingByGeomMean(modelList)
-        self.var = ugs.scalingByVariance(modelList)
+    def __init__(self, modelList, levelsFM, fileScaling=None):
+        self.mean = ugs.scalingByMean(modelList,fileScaling)
+        self.geomMean = ugs.scalingByGeomMean(modelList,fileScaling)
+        self.var = ugs.scalingByVariance(modelList,fileScaling)
         self.scalingFMmini = ugs.scalingFMmini(modelList)
         Nlevels = levelsFM.size
         self.scalingFM = np.zeros(Nlevels)
@@ -71,7 +71,7 @@ class GlobalLinearAnalyse:
     class to perform a global linear analyse
     '''
 
-    def __init__(self, modelList,
+    def __init__(self, modelList, fileScaling=None,
                  chooseScaling='mean',
                  levelsFM=None, NlevelsFM=10, spaceFM='lin',
                  levelsAlpha=None, NlevelsAlpha=3, spacing=2.,
@@ -80,7 +80,7 @@ class GlobalLinearAnalyse:
         self.modelList = modelList
 
         if levelsFM is None:
-            self.levelsFM = ugs.findNLevelsML(modelList,NlevelsFM,spaceFM)
+            self.levelsFM = ugs.findNLevelsML(modelList,NlevelsFM,spaceFM,fileScaling)
         else:
             self.levelsFM = levelsFM
             NlevelsFM = levelsFM.size
@@ -92,19 +92,19 @@ class GlobalLinearAnalyse:
             NlevelsAlpha = levelsAlpha.size
 
         if levelsKS is None:
-            self.levelsKS = ugs.findNLevelsML(modelList,NlevelsKS,spaceKS)
+            self.levelsKS = ugs.findNLevelsML(modelList,NlevelsKS,spaceKS,fileScaling)
         else:
             self.levelsKS = levelsKS
 
-        self.scaling = GlobalScaling(modelList,self.levelsFM)
+        self.scaling = GlobalScaling(modelList,self.levelsFM,fileScaling)
         self.results = GlobalLinearAnalyseResult(len(modelList),NlevelsFM,NlevelsAlpha)
         self.chooseScaling = chooseScaling
         self.field1 = 0
         self.field2 = 0
 
     def performAnalyseOn(self, i, j):
-        self.field1 = np.fromfile(self.modelList[i])
-        self.field2 = np.fromfile(self.modelList[j])
+        self.field1 = np.load(self.modelList[i])
+        self.field2 = np.load(self.modelList[j])
 
         if not self.chooseScaling=='none':
             self.results.MSE[i,j]    = NMSE_corrected(   self.field1 , self.field2 , self.scaling.chooseScaling(self.chooseScaling) )
@@ -183,7 +183,8 @@ class GlobalLogAnalyse:
     '''
 
     def __init__(self, modelList,
-                 levelsKS=None, NlevelsKS=100, spaceKS='log'):
+                 levelsKS=None, NlevelsKS=100, spaceKS='log',
+                 epsilon=1e-50):
         
         self.modelList = modelList
         
@@ -193,17 +194,18 @@ class GlobalLogAnalyse:
             self.levelsKS = levelsKS
             
         self.results = GlobalLogAnalyseResult(len(modelList))
-        self.field1 = 0
-        self.field2 = 0                
+        self.field1  = 0
+        self.field2  = 0
+        self.epsilon = epsilon
         
     def performAnalyseOn(self, i, j):
-        self.field1 = np.fromfile(self.modelList[i])
-        self.field2 = np.fromfile(self.modelList[j])
+        self.field1 = np.load(self.modelList[i])
+        self.field2 = np.load(self.modelList[j])
                         
-        self.results.geomVar[i,j]  = geomVar(  self.field1 , self.field2 )
-        self.results.geomBias[i,j] = geomBias( self.field1 , self.field2 )
-        self.results.KSlog[i,j]    = KSLevels( self.field1 , self.field2 , self.levelsKS )
-        self.results.PCClog[i,j]   = PCC(      self.field1 , self.field2 )
+        self.results.geomVar[i,j]  = geomVar(  self.field1 , self.field2, self.epsilon  )
+        self.results.geomBias[i,j] = geomBias( self.field1 , self.field2, self.epsilon  )
+        self.results.PCClog[i,j]   = PCC(      self.field1 , self.field2, self.epsilon  )
+        self.results.KSlog[i,j]    = KSLevels( self.field1 , self.field2, self.levelsKS )
 
         self.field1 = 0
         self.field2 = 0

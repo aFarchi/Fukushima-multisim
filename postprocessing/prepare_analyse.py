@@ -172,7 +172,7 @@ if computeGlobalScaling:
             info[1] *= relevantInfo[g][proc][0]
             info[2] += relevantInfo[g][proc][1]
             info[3]  = np.max( [ info[3], relevantInfo[g][proc][2] ] )
-            info[4]  = np.max( [ info[4], relevantInfo[g][proc][3] ] )
+            info[4]  = np.min( [ info[4], relevantInfo[g][proc][3] ] )
         info[0] /= len(namesProcesses)
         info[2] /= len(namesProcesses)
         info[1]  = np.power( info[1] , 1./len(namesProcesses) )
@@ -236,7 +236,7 @@ if computeGlobalScaling:
             info[1] *= relevantInfo[aer][proc][0]
             info[2] += relevantInfo[aer][proc][1]
             info[3]  = np.max( [ info[3], relevantInfo[aer][proc][2] ] )
-            info[4]  = np.max( [ info[4], relevantInfo[aer][proc][3] ] )
+            info[4]  = np.min( [ info[4], relevantInfo[aer][proc][3] ] )
         info[0] /= len(namesProcesses)
         info[2] /= len(namesProcesses)
         info[1]  = np.power( info[1] , 1./len(namesProcesses) )
@@ -303,7 +303,7 @@ if computeGlobalScaling:
             info[1] *= relevantInfo[g][proc][0]
             info[2] += relevantInfo[g][proc][1]
             info[3]  = np.max( [ info[3], relevantInfo[g][proc][2] ] )
-            info[4]  = np.max( [ info[4], relevantInfo[g][proc][3] ] )
+            info[4]  = np.min( [ info[4], relevantInfo[g][proc][3] ] )
         info[0] /= len(namesProcesses)
         info[2] /= len(namesProcesses)
         info[1]  = np.power( info[1] , 1./len(namesProcesses) )
@@ -369,7 +369,7 @@ if computeGlobalScaling:
             info[1] *= relevantInfo[aer][proc][0]
             info[2] += relevantInfo[aer][proc][1]
             info[3]  = np.max( [ info[3], relevantInfo[aer][proc][2] ] )
-            info[4]  = np.max( [ info[4], relevantInfo[aer][proc][3] ] )
+            info[4]  = np.min( [ info[4], relevantInfo[aer][proc][3] ] )
         info[0] /= len(namesProcesses)
         info[2] /= len(namesProcesses)
         info[1]  = np.power( info[1] , 1./len(namesProcesses) )

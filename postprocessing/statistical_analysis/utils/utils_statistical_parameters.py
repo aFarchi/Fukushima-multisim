@@ -47,15 +47,15 @@ def bias_corrected(X,Y,scaling):
 ##########################################
 # Geometric Bias
 
-def geomBias(X,Y):
-    Z = X / Y
+def geomBias(X,Y,epsilon):
+    Z = X / np.maximum(Y,epsilon)
     return st.gmean(Z)    
 
 ##########################################
 # Geometric mean variance
 
-def geomVar(X,Y):
-    return np.exp( np.power( np.log( X / Y ) , 2 ).mean() )
+def geomVar(X,Y,epsilon):
+    return np.exp( np.power( np.log( np.maximum( X / np.maximum(Y,epsilon) , epsilon ) ) , 2 ).mean() )
 
 ##########################################
 # Pearson's correlation coefficient
@@ -65,7 +65,7 @@ def PCC(X,Y):
     return r
 
 def PCClog(X,Y):
-    r,p = st.personr(np.log(X),np.log(Y))
+    r,p = st.personr(np.log(np.maximum(X,epsilon)),np.log(np.maximum(Y,epsilon)))
     return r
 
 ##########################################
