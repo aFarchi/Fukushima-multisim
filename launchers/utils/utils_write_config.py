@@ -75,6 +75,13 @@ def write_config_general(config_dir, work_dir, relative_path, Reso_proc, BCS_pro
                 print 'No valid resolution ('+Reso_proc+')'
                 sys.exit(1)
 
+        # vertical levels
+        elif ('Vertical_levels:' in l):
+            Out.write(l.replace('Vertical_levels:',
+                                'Vertical_levels: ' +
+                                config_dir +
+                                'levels.dat'))
+
         # config and path
         elif ('config_dir:' in l):
             Out.write(l.replace('config_dir:',
