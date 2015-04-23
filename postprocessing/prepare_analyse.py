@@ -3,7 +3,10 @@ import os
 import sys
 from scipy.interpolate import interp1d
 
-from utils_read_list_of_processes import *
+#from utils_read_list_of_processes import *
+#from utils_global_scaling import *
+
+from statistical_analysis.utils import utils_read_list_of_processes as readList
 
 ######################################
 # run command
@@ -34,8 +37,11 @@ statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
 fileFields    = statDir+'list_fields.dat'
 
+computeGlobalScaling = True
 analyseResolution = (1,1,32,32)
 deltaT = 3600.
+
+myrun('mkdir -p '+statDir)
 
 ######################################
 # Defines species
@@ -96,7 +102,7 @@ for (name,n) in Species:
     
 ######################################
 # Catch name of processes
-namesProcesses = readListOfProcesses(fileProcesses)
+namesProcesses = readList.readListOfProcesses(fileProcesses)
 for proc in namesProcesses:
     proc = outputDir + sessionName + proc
     myrun('mkdir -p '+proc+'/to_analyse')
@@ -105,12 +111,24 @@ for proc in namesProcesses:
 ######################################    
 # Prepare fields to analyse
 fields = []
+dimFields = []
 
 ######################################
 # Compute columns of air concentration
 # at the end of the simulation 
-
+nameField = 'airColumn'
+dimField  = (2,3)
 (Nta,Nza,Nya,Nxa) = analyseResolution
+
+# for gaz
+if computeGlobalScaling:
+    nbrRelevantInfo = 4
+    relevantInfo = {}
+    for g in Gaz:
+        relevantInfo[g] = {}
+        for proc in namesProcesses:
+            relevantInfo[g][proc] = np.zeros(nbrRelevantInfo)
+
 (Nt,Nz,Ny,Nx) = Ngaz['']
 for proc in namesProcesses:
     for g in Gaz:
@@ -121,19 +139,54 @@ for proc in namesProcesses:
         data = data[Nt-1,:,:,:]
         airColumn = data.mean(axis=0)
 
-        nameField = 'airColumn_' + g
         if proc == namesProcesses[0]:
-            fields.append(nameField)
+            fields.append(nameField + '_' + g)
+            dimFields.append(dimField)
         
-        fileName = proc + '/to_analyse/' + nameField + '.npy'
+        fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
         print ('Writing '+fileName+'...')
 
         if Ny > Nya:
             airColumn = interpolate(airColumn,0,Nya)
         if Nx > Nxa:
             airColumn = interpolate(airColumn,1,Nxa)
+
+        if computeGlobalScaling:
+            relevantInfo[g][proc][0] = airColumn.mean()**2
+            relevantInfo[g][proc][1] = airColumn.var()
+            relevantInfo[g][proc][2] = airColumn.max()
+            relevantInfo[g][proc][3] = airColumn.min()
         
         np.save(fileName,airColumn)
+
+if computeGlobalScaling:
+    for g in Gaz:
+        info = np.zeros(5)
+        info[1] = 1.
+        info[3] = relevantInfo[g][namesProcesses[0]][2]
+        info[4] = relevantInfo[g][namesProcesses[0]][3]
+        for proc in namesProcesses:
+            info[0] += relevantInfo[g][proc][0]
+            info[1] *= relevantInfo[g][proc][0]
+            info[2] += relevantInfo[g][proc][1]
+            info[3]  = np.max( [ info[3], relevantInfo[g][proc][2] ] )
+            info[4]  = np.max( [ info[4], relevantInfo[g][proc][3] ] )
+        info[0] /= len(namesProcesses)
+        info[2] /= len(namesProcesses)
+        info[1]  = np.power( info[1] , 1./len(namesProcesses) )
+
+        fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+        print ('Writing '+fileScaling+'...')
+        info.tofile(fileScaling)
+
+# for aerosols
+if computeGlobalScaling:
+    nbrRelevantInfo = 4
+    relevantInfo = {}
+    for aer in Radios:
+        relevantInfo[aer] = {}
+        for proc in namesProcesses:
+            relevantInfo[aer][proc] = np.zeros(nbrRelevantInfo)                                        
 
 (Nt,Nz,Ny,Nx) = Nradios['']
 for proc in namesProcesses:
@@ -150,24 +203,60 @@ for proc in namesProcesses:
             weight += 1.
         airColumnAer /= weight
         
-        nameField = 'airColumn_' + aer
         if proc == namesProcesses[0]:
-            fields.append(nameField)
+            fields.append(nameField + '_' + aer)
+            dimFields.append(dimField)
                         
-        fileName = proc + '/to_analyse/' + nameField + '.npy'
+        fileName = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
         print ('Writing '+fileName+'...')
 
         if Ny > Nya:
             airColumnAer = interpolate(airColumn,0,Nya)
         if Nx > Nxa:
             airColumnAer = interpolate(airColumn,1,Nxa)
-                                
+
+        if computeGlobalScaling:
+            relevantInfo[aer][proc][0] = airColumnAer.mean()**2
+            relevantInfo[aer][proc][1] = airColumnAer.var()
+            relevantInfo[aer][proc][2] = airColumnAer.max()
+            relevantInfo[aer][proc][3] = airColumnAer.min()
+                                                                
         np.save(fileName,airColumnAer)
 
+if computeGlobalScaling:
+    for aer in Radios:
+        info = np.zeros(5)
+        info[1] = 1.
+        info[3] = relevantInfo[aer][namesProcesses[0]][2]
+        info[4] = relevantInfo[aer][namesProcesses[0]][3]
+        for proc in namesProcesses:
+            info[0] += relevantInfo[aer][proc][0]
+            info[1] *= relevantInfo[aer][proc][0]
+            info[2] += relevantInfo[aer][proc][1]
+            info[3]  = np.max( [ info[3], relevantInfo[aer][proc][2] ] )
+            info[4]  = np.max( [ info[4], relevantInfo[aer][proc][3] ] )
+        info[0] /= len(namesProcesses)
+        info[2] /= len(namesProcesses)
+        info[1]  = np.power( info[1] , 1./len(namesProcesses) )
+
+        fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+        print ('Writing '+fileScaling+'...')
+        info.tofile(fileScaling)
+                                                                                                                                                
 ######################################
 # Cumul of the deposition
-
+nameField = 'totalDeposition'
+dimField  = (2,3)
 (Nta,Nza,Nya,Nxa) = analyseResolution
+
+# for gaz
+if computeGlobalScaling:
+    nbrRelevantInfo = 4
+    relevantInfo = {}
+    for g in Gaz:
+        relevantInfo[g] = {}
+        for proc in namesProcesses:
+            relevantInfo[g][proc] = np.zeros(nbrRelevantInfo)
 
 for proc in namesProcesses:
     for g in Gaz:
@@ -186,13 +275,49 @@ for proc in namesProcesses:
                 data = interpolate(data,1,Nxa)
             dep += data
 
-        nameField = 'totalDeposition_' + g
         if proc == namesProcesses[0]:
-            fields.append(nameField)
-        fileName = proc + '/to_analyse/' + nameField + '.npy'
+            fields.append(nameField + '_' + g)
+            dimFields.append(dimField)
+            
+        fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
         print ('Writing '+fileName+'...')
+
+        if computeGlobalScaling:
+            relevantInfo[g][proc][0] = dep.mean()**2
+            relevantInfo[g][proc][1] = dep.var()
+            relevantInfo[g][proc][2] = dep.max()
+            relevantInfo[g][proc][3] = dep.min()                                                
+        
         np.save(fileName,dep)
                              
+if computeGlobalScaling:
+    for g in Gaz:
+        info = np.zeros(5)
+        info[1] = 1.
+        info[3] = relevantInfo[g][namesProcesses[0]][2]
+        info[4] = relevantInfo[g][namesProcesses[0]][3]
+        for proc in namesProcesses:
+            info[0] += relevantInfo[g][proc][0]
+            info[1] *= relevantInfo[g][proc][0]
+            info[2] += relevantInfo[g][proc][1]
+            info[3]  = np.max( [ info[3], relevantInfo[g][proc][2] ] )
+            info[4]  = np.max( [ info[4], relevantInfo[g][proc][3] ] )
+        info[0] /= len(namesProcesses)
+        info[2] /= len(namesProcesses)
+        info[1]  = np.power( info[1] , 1./len(namesProcesses) )
+        
+        fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+        print ('Writing '+fileScaling+'...')
+        info.tofile(fileScaling)
+                                                                                                                                                
+# for aerosols
+if computeGlobalScaling:
+    nbrRelevantInfo = 4
+    relevantInfo = {}
+    for aer in Radios:
+        relevantInfo[aer] = {}
+        for proc in namesProcesses:
+            relevantInfo[aer][proc] = np.zeros(nbrRelevantInfo)                            
 
 for proc in namesProcesses:
     for aer in Radios:
@@ -215,17 +340,55 @@ for proc in namesProcesses:
                         data = interpolate(data,1,Nxa)
                     dep += data
                     
-        nameField = 'totalDeposition_' + aer
+        #nameField = 'totalDeposition_' + aer
         if proc == namesProcesses[0]:
             fields.append(nameField)
-        fileName = proc + '/to_analyse/' + nameField + '.npy'
+            dimFields.append(dimField)
+            
+        fileName = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
         print ('Writing '+fileName+'...')
+
+        if computeGlobalScaling:
+            relevantInfo[aer][proc][0] = dep.mean()**2
+            relevantInfo[aer][proc][1] = dep.var()
+            relevantInfo[aer][proc][2] = dep.max()
+            relevantInfo[aer][proc][3] = dep.min()                                                
+        
         np.save(fileName,dep)
-                                                        
+
+if computeGlobalScaling:
+    for aer in Radios:
+        info = np.zeros(5)
+        info[1] = 1.
+        info[3] = relevantInfo[aer][namesProcesses[0]][2]
+        info[4] = relevantInfo[aer][namesProcesses[0]][3]
+        for proc in namesProcesses:
+            info[0] += relevantInfo[aer][proc][0]
+            info[1] *= relevantInfo[aer][proc][0]
+            info[2] += relevantInfo[aer][proc][1]
+            info[3]  = np.max( [ info[3], relevantInfo[aer][proc][2] ] )
+            info[4]  = np.max( [ info[4], relevantInfo[aer][proc][3] ] )
+        info[0] /= len(namesProcesses)
+        info[2] /= len(namesProcesses)
+        info[1]  = np.power( info[1] , 1./len(namesProcesses) )
+            
+        fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+        print ('Writing '+fileScaling+'...')
+        info.tofile(fileScaling)
+        
 ######################################
-# Writes fields name
+# Writes fields name and dimensions
 
 f = open(fileFields, 'w')
-for field in fields:
-    f.write(field+'\n')
+print ('Writing '+fileFields+'...')
+
+for i in xrange(len(fields)):
+    field = fields[i]
+    dims  = dimFields[i]
+    
+    f.write(field+':')
+    for dim in dims:
+        f.write(str(dim)+',')
+    f.write('\n')
+
 f.close()

@@ -82,3 +82,23 @@ def readListOfProcesses(fileName):
         names.append(name)
 
     return names
+
+def readListOfFields(fileName):
+    f      = open(fileName, 'r')
+    lines  = f.readlines()
+    fields = []
+    dims   = []
+    
+    for line in lines:
+        l = line.split(':')
+        field = l[0]
+        dimensions = l[1].split(',')
+        dim = []
+        for d in dimensions:
+            if not d == '':
+                dim.append(int(d))
+        dim = tuple(dim)
+        
+        fields.append(field)
+        dims.append(dim)
+    return fields,dim
