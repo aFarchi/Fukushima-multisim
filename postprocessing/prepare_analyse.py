@@ -233,7 +233,7 @@ if prepareGroundLevel:
                 relevantInfo[aer][proc][2] = airGLAer.max()
                 relevantInfo[aer][proc][3] = airGLAer.min()
                                                                 
-            np.save(fileName,airColumnAer)
+            np.save(fileName,airGLAer)
 
     if computeGlobalScaling:
         for aer in Radios:
@@ -472,7 +472,7 @@ if prepareTotalDeposition:
 
     for proc in namesProcesses:
         for aer in Radios:
-            dep = np.zeros(shape=(Nya,Nxa))
+            dep = np.zeros(shape=(Ny,Nx))
 
             for rSpe in RadioSpecies[aer]:
                 for DoW in DryorWet:
