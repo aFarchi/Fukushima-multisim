@@ -192,3 +192,75 @@ def write_source_term(SourceFile, work_dir, PSD_proc, dx_proc, dy_proc, dz_proc,
 			print fileName
 	return 0
 
+def addToLine(line,toAdd):
+	l = line.split(':')
+	newLine = l[0]
+	value = float(l[1].replace('\n',''))
+	newLine += ': ' + str(value + toAdd) + '\n'
+	return newLine
+
+def catchDate(s):
+	l = s.split('_')
+	lDate = l[0].split('-')
+	lTime = l[1].split('h')
+
+	lDateTime = []
+	for st in lDate:
+		lDateTime.append(int(st))
+	for st in lTime:
+		lDateTime.append(int(st))
+	date = datetime(lDateTime[0], lDateTime[1], lDateTime[2])
+	date = date + timedelta(hours=lDateTime[3])
+	return date
+	
+def writeSourceTermGas(SourceFile, work_dir, dx_proc, dy_proc, dz_proc, dt_proc, DX_Unit=1., DY_Unit=1., DZ_Unit=1., DT_Unit=1.):	
+	prefix = SourceFile.split('/')
+	prefix = prefix[len(prefix)-1]
+	prefix = prefix.split('.')[0]
+	
+	OutPath = work_dir + 'heavy_data/source_shift/'
+	source = open(SourceFile, 'r')
+	lines  = source.readlines()
+	source.close()
+
+	suffix_proc = fn_of_shifts(dx_proc,dy_proc,dz_proc,dt_proc)
+	dx = shift_of_str(dx_proc)*DX_Unit
+	dy = shift_of_str(dy_proc)*DY_Unit
+	dz = shift_of_str(dz_proc)*DZ_Unit
+	dt = shift_of_str(dt_proc)*DT_Unit
+
+	fileName  = OutPath + prefix + '_' + suffix_proc + '.dat'
+	sourceout = open(fileName,'w')
+	
+	for line in lines:
+		if ('Abscissa' in line):
+			sourceout.write(addToLine(line,dx))
+		elif ('Ordinate' in line):
+			sourceout.write(addToLine(line,dy))
+		elif ('Altitude' in line):
+			sourceout.write(addToLine(line,dz))
+		elif ('Date_beg' in line):
+			l = line.split(':')
+			date = catchDate(l[1].replace('\n','')) + timedelta(hours=dt)
+			newLine = ( 'Date_beg: ' +
+				    str(date.year) + '-' +
+				    str('%02d' %date.month) + '-' +
+				    str('%02d' %date.day) + '_' +
+				    str('%02d' %date.hour) + 'h00\n' )
+			sourceout.write(newLine)
+		elif ('Date_end' in line):
+			l = line.split(':')
+			date = catchDate(l[1].replace('\n','')) + timedelta(hours=dt)
+			newLine = ( 'Date_end: ' +
+				    str(date.year) + '-' +
+				    str('%02d' %date.month) + '-' +
+				    str('%02d' %date.day) + '_' +
+				    str('%02d' %date.hour) + 'h59\n' )
+			sourceout.write(newLine)
+		else:
+			sourceout.write(line)
+			
+	sourceout.close()
+	print fileName
+	return 0
+

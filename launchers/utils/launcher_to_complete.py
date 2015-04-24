@@ -61,6 +61,7 @@ DZ_Unit = 1.
 DT_Unit = 1.
 SourceFile = dir_reference+'source_shift/D22.bin'
 uws.write_source_term(SourceFile, work_dir, PSD_Source_proc, dx_proc, dy_proc, dz_proc, dt_proc, DX_Unit, DY_Unit, DZ_Unit, DT_Unit)
+uws.writeSourceTermGas(dir_reference+'source/IRSN_one_Gases.dat', work_dir, dx_proc, dy_proc, dz_proc, dt_proc, DX_Unit, DY_Unit, DZ_Unit, DT_Unit)
 
 #####################################################
 # File destruction and creation

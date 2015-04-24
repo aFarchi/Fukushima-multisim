@@ -181,6 +181,9 @@ def write_config_data(config_dir, work_dir, relative_path, Met_proc, Source_proc
                                 '<Emissions_Data_path>/'
                                 +Source_proc+'_'+PSD_Source_proc+'_'+suffix_proc
                                 +'.dat'))
+            
+        elif ('$point_source_gas$' in l):
+            Out.write(l.replace('$point_source_gas$', suffix_proc))
                                                                                     
         # deposition
         elif ('Dep_Data_path:' in l):
