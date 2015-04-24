@@ -51,6 +51,15 @@ config_dir = '$config_dir'
 dir_reference = '$dir_reference'
 poly_dir = '$poly_dir'
 
+if dx_proc == '':
+	dx_proc = '0p0'
+if dy_proc == '':
+	dy_proc = '0p0'
+if dz_proc == '':
+	dz_proc = '0p0'
+if dt_proc == '':
+	dt_proc = '0p0'
+			
 suffix_proc = uws.fn_of_shifts(dx_proc,dy_proc,dz_proc,dt_proc)
 
 #####################################################

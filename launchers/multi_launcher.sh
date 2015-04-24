@@ -70,6 +70,8 @@ else
 logfile=$dir_output$session_name'/'$6
 fi
 
+logfileSynchro=$logfile'_heavyDataSynchronization'
+
 echo 'Creating output directory : '$dir_output$session_name
 mkdir -p $dir_output$session_name
 cp $file_processes $dir_output$session_name
@@ -96,8 +98,8 @@ rm -f $nodes_rest
 python $dir_launchers'list_of_nodes/make_list_of_nodes_rest.py' $nodes $nodes_rest
 
 echo 'Starting synchronizing heavy data ...'
-echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes_rest' --log='$logfile' run '$synchronizer
-algo start --argument-file=$file_processes_final --computer-file=$nodes_rest --log=$logfile run $synchronizer
+echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes_rest' --log='$logfileSynchro' run '$synchronizer
+algo start --argument-file=$file_processes_final --computer-file=$nodes_rest --log=$logfileSynchro run $synchronizer
 
 echo 'Starting algorithm ...'
 echo 'algo start --argument-file='$file_processes_final' --computer-file='$nodes' --log='$logfile' run '$launcher
