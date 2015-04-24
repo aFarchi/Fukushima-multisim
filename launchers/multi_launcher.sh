@@ -58,7 +58,7 @@ fi
 
 if [[ $5='' ]]
 then
-    nodes=$dir_launchers'list_of_nodes/nodes_om_rest.dat'
+    nodes=$dir_launchers'list_of_nodes/nodes_om.dat'
 else
     nodes=$5
 fi
@@ -89,7 +89,7 @@ rm -f $synchronizer
 python $dir_launchers'utils/make_launcher.py' $synchronizer_to_complete $synchronizer $session_name $work_dir $dir_output $dir_config $dir_reference_data $poly_dir
 chmod +x $synchronizer
 
-cp $dir_config'dir_config' $dir_output$session_name
+cp -r $dir_config $dir_output$session_name
 
 echo 'Reading nodes list :'$nodes
 rm -f $nodes_rest

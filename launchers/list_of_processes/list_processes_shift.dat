@@ -20,7 +20,7 @@ DRY_DEP: constant #(Compute_deposition_aerosol=no)
 rain_dependent_aer: IRSN
 water_dependent_aer: IRSN
 
-DX: 0p0#m1p0,0p0,1p0
-DY: m1p0,0p0,1p0
+DX: m1p0,0p0,1p0
+DY: #m1p0,0p0,1p0
 DZ: 0p0#m1p0,0p0,1p0
 DT: m1p0,0p0,1p0

@@ -16,7 +16,8 @@ In.close()
 Out = open(FileNameOut, 'w')
 
 for l in lines:
-    nbr_nodes, server_name = l.split('/')
-    Out.write('1/'+server_name)
+    if ('/' in l):
+        server_name = l.split('/')
+        Out.write('1/'+server_name[1])
         
 Out.close()
