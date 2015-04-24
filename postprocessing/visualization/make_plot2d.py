@@ -1,19 +1,8 @@
-#import os
-#import sys
 import numpy as np
 from matplotlib import pyplot as plt
 
 import utils_read_list_of_processes as readList
-import utils_plot.py as plot
-
-######################################
-# run command
-
-#def myrun(command):
-#    status = os.system(command)
-#    print command
-#    if status != 0:
-#        sys.exit(status)
+import utils_plot as plot
 
 ######################################
 # Defines directions and file names
@@ -25,7 +14,9 @@ fileProcesses = outputDir+sessionName+'list_processes.dat'
 
 fileFields    = statDir+'list_fields.dat'
 analyseResolution = (1,1,32,32)
+scale = 'lin'
 
+LOGSCALEMIN = 1.e-30
 ######################################
 # Catch name of processes
 namesProcesses = readList.readListOfProcesses(fileProcesses)
@@ -44,17 +35,26 @@ best = divisors[ np.argmin(np.abs(divisors-np.sqrt(nbrProcesses))) ]
 best = np.max([ best, nbrProcesses/best ])
 grid = (best, nbrProcesses/best)
 
+print(grid)
+
 ######################################
 # Catch name of fields to analyse and
 #    corresponding dimensions
 
-namesFields,dimFields = readList.readListOfFields(fileFields)
-for name in namesFields:
-    print(name)
-                                        
+namesFields, dimFields = readList.readListOfFields(fileFields)
+for i in xrange(len(namesFields)):
+    print(namesFields[i])
+    print(dimFields[i])
+
+######################################
+# Log filter
+
+def log10Filter(matrix):
+    return  np.log10( np.maximum(matrix, LOGSCALEMIN) )
+
 ######################################
 # Map of the results
-plotter = 'contourf'
+plotter = 'imshow'
 
 for i in xrange(len(namesFields)):
     field = namesFields[i]
@@ -66,12 +66,31 @@ for i in xrange(len(namesFields)):
         plot.correctAxesExtend(ax,0.,grid[0],0.,grid[1])
 
         scaling = np.fromfile(fileScaling)
-        mini = scaling[4]
-        maxi = scaling[3]
+        if scale == 'lin':
+            mini = scaling[4]
+            maxi = scaling[3]
+        elif scale == 'log':
+            mini = log10Filter(scaling[4])
+            maxi = log10Filter(scaling[3])
+            
         transpose = False
         
         if dim[0] == 2 or dim[1] == 3:
             tranpose = True
+            dim = ( dim[1] , dim[0] )
+
+        Xlabel = '$x$'
+        Ylabel = '$y$'
+
+        if dim[0] == 0:
+            Xlabel = '$t$'
+        elif dim[0] == 1:
+            Xlabel = '$z$'
+
+        if dim[1] == 0:
+            Ylabel = '$t$'
+        elif dim[1] == 1:
+            Ylabel = '$z$'
 
         modelList = []
         for proc in namesProcesses:
@@ -80,80 +99,33 @@ for i in xrange(len(namesFields)):
         for X in xrange(grid[0]):
             for Y in xrange(grid[1]):
                 matrix  = np.load(modelList[grid[0]*Y+X])
-                figname = statDir+field+'_model'+str(grid[0]*Y+X) 
+                if scale == 'log':
+                    matrix = log10Filter(matrix)
+                
+                figname = statDir+field+'_model'+str(grid[0]*Y+X)
+                title   = field+'\nmodel : '+str(grid[0]*Y+X)
                 if transpose:
                     matrix = matrix.transpose()
 
-                if plotter == 'imshow':
-                    plot.plotMatrixOnAxes(matrix, ax, origin='lower', extent=[X,X+1.,Y,Y+1.], vmin=mini, vmax=maxi,
-                                          cmap=None, norm=None, aspect=None, interpolation=None, alpha=None, shape=None,
-                                          filternorm=1, filterrad=4.0, imlim=None, resample=None, url=None)
-                    try:
-                        figname += '.pdf'
-                        saveMatrix(matrix, figname, clbar=True,
-                                   origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                   grid=False, title='', xlabel='', ylabel='',
-                                   cmap=None, norm=None, aspect=None, interpolation=None, alpha=None, shape=None,
-                                   filternorm=1, filterrad=4.0, imlim=None, resample=None, url=None)
-                    except:
-                        figname += '.png'
-                        saveMatrix(matrix, figname, clbar=True,
-                                   origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                   grid=False, title='', xlabel='', ylabel='',
-                                   cmap=None, norm=None, aspect=None, interpolation=None, alpha=None, shape=None,
-                                   filternorm=1, filterrad=4.0, imlim=None, resample=None, url=None)
-
-                elif plotter == 'contour':
-                    plot.contourMatrixOnAxes(matrix, ax, levels=None, vmin=mini, vmax=maxi, origin='lower', extent=[X,X+1.,Y,Y+1.], extend='neither',
-                                             colors=,None, linewidths=None, linestyles=None, locator=None, alpha=None, cmap=None, norm=None, antialiased=True)
-
-                    try:
-                        figname += '.pdf'
-                        saveMatrixContour(matrix, figname, clbar=True, fill=True,
-                                          origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                          grid=False, title='', xlabel='', ylabel='',
-                                          cmap=None, norm=None, alpha=None,
-                                          levels=None, extend='neither',
-                                          colors=None, linewidths=None, linestyles=None, locator=None, antialiased=True)
-                    except:
-                         figname += '.png'
-                         saveMatrixContour(matrix, figname, clbar=True, fill=True,
-                                           origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                           grid=False, title='', xlabel='', ylabel='',
-                                           cmap=None, norm=None, alpha=None,
-                                           levels=None, extend='neither',
-                                           colors=None, linewidths=None, linestyles=None, locator=None, antialiased=True)
-                                                                     
-                elif plotter == 'contourf':
-                    plot.contourfMatrixOnAxes(matrix, ax, levels=None, vmin=mini, vmax=maxi, origin='lower', extent=[X,X+1.,Y,Y+1.], extend='neither',
-                                              colors=None, linewidths=None, linestyles=None, locator=None, alpha=None, cmap=None, norm=None, antialiased=True)
-
-                    try:
-                        figname += '.pdf'
-                        saveMatrixContour(matrix, figname, clbar=True, fill=True,
-                                          origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                          grid=False, title='', xlabel='', ylabel='',
-                                          cmap=None, norm=None, alpha=None,
-                                          levels=None, extend='neither',
-                                          colors=None, linewidths=None, linestyles=None, locator=None, antialiased=True)
-                    except:
-                        figname += '.png'
-                        saveMatrixContour(matrix, figname, clbar=True, fill=True,
-                                          origin='lower', extent=[0.,1.,0.,1.], vmin=None, vmax=None,
-                                          grid=False, title='', xlabel='', ylabel='',
-                                          cmap=None, norm=None, alpha=None,
-                                          levels=None, extend='neither',
-                                          colors=None, linewidths=None, linestyles=None, locator=None, antialiased=True)
+                im = plot.plotMatrixOnAxes(matrix, ax, plotter, extent=[X,X+1.,Y,Y+1.], vmin=mini, vmax=maxi, interpolation='nearest')
+                plot.trySaveMatrixPDF(matrix, figname, plotter, title=title, xlabel=Xlabel, ylabel=Ylabel, interpolation='nearest')
 
         plt.figure(2)
         # add vertical and horizontal lines to distinguish the small matrices
-        for X in xrange(grid[0]):
+        for X in xrange(grid[0]+1):
             ax.plot([X,X],[0.,grid[1]],'k-',linewidth=5)
-        for Y in xrange(grid[1]):
-            ax.plot([X,X],[0.,grid[1]],'k-',linewidth=5))
+        for Y in xrange(grid[1]+1):
+            ax.plot([0,grid[0]],[Y,Y],'k-',linewidth=5)
+
+        plot.addLabelsTitleGrid(grid=False,title=field,xlabel=Xlabel,ylabel=Ylabel)
+        plt.colorbar(im)
         
-        addLabelsTitleGrid(grid=False,title=field,xlabel='',ylabel='')
         try:
-            plt.savefig(statDir+field+'_allmodels.pdf')
+            figname = statDir+field+'_allmodels.pdf'
+            print(figname)
+            plt.savefig(figname)
         except:
-            plt.savefig(statDir+field+'_allmodels.png')
+            figname = statDir+field+'_allmodels.png'
+            print(figname)
+            plt.savefig(figname)
+                                    

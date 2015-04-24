@@ -99,7 +99,7 @@ def readListOfFields(fileName):
     for line in lines:
         l = line.split(':')
         field = l[0]
-        dimensions = l[1].split(',')
+        dimensions = l[1].replace('\n','').split(',')
         dim = []
         for d in dimensions:
             if not d == '':
@@ -108,4 +108,4 @@ def readListOfFields(fileName):
         
         fields.append(field)
         dims.append(dim)
-    return fields,dim
+    return fields,dims
