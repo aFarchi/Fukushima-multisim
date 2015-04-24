@@ -410,7 +410,7 @@ if prepareTotalDeposition:
 
     for proc in namesProcesses:
         for g in Gaz:
-            dep = np.zeros(shape=(Nya,Nxa))
+            dep = np.zeros(shape=(Ny,Nx))
             for DoW in DryorWet:
                 (Nt,Nz,Ny,Nx) = Ngaz[DoW]
                 fileName = proc + '/' + DoW + g + '.bin'
@@ -419,10 +419,6 @@ if prepareTotalDeposition:
                 data = data.reshape((Nt,Nz,Ny,Nx))
                 data = data.cumsum(axis=0)*deltaT
                 data = data[Nt-1, 0,:,:]
-                if Ny > Nya:
-                    data = interpolate(data,0,Nya)
-                if Nx > Nxa:
-                    data = interpolate(data,1,Nxa)
                 dep += data
 
             if proc == namesProcesses[0]:
@@ -432,12 +428,17 @@ if prepareTotalDeposition:
             fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
             print ('Writing '+fileName+'...')
 
+            if Ny > Nya:
+                dep = interpolate(dep,0,Nya)
+            if Nx > Nxa:
+                dep = interpolate(dep,1,Nxa)
+
             if computeGlobalScaling:
                 relevantInfo[g][proc][0] = dep.mean()**2
                 relevantInfo[g][proc][1] = dep.var()
                 relevantInfo[g][proc][2] = dep.max()
                 relevantInfo[g][proc][3] = dep.min()                                                
-        
+
             np.save(fileName,dep)
                              
     if computeGlobalScaling:
@@ -483,11 +484,6 @@ if prepareTotalDeposition:
                         data = data.reshape((Nt,Nz,Ny,Nx))
                         data = data.cumsum(axis=0)*deltaT
                         data = data[Nt-1, 0,:,:]
-
-                        if Ny > Nya:
-                            data = interpolate(data,0,Nya)
-                        if Nx > Nxa:
-                            data = interpolate(data,1,Nxa)
                         dep += data
                     
             if proc == namesProcesses[0]:
@@ -496,6 +492,11 @@ if prepareTotalDeposition:
             
             fileName = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
             print ('Writing '+fileName+'...')
+            
+            if Ny > Nya:
+                dep = interpolate(dep,0,Nya)
+            if Nx > Nxa:
+                dep = interpolate(dep,1,Nxa)
 
             if computeGlobalScaling:
                 relevantInfo[aer][proc][0] = dep.mean()**2
