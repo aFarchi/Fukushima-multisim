@@ -10,7 +10,7 @@ def fn_of_shifts(dx,dy,dz,dt):
                                                 
 def catchLevelsFromFile(fileName):
     f = open(fileName, 'r')
-    lines = f.readLines()
+    lines = f.readlines()
     levels = np.zeros(len(lines))
     for i in xrange(len(lines)):
         levels[i] = float(lines[i])

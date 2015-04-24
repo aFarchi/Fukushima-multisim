@@ -344,7 +344,7 @@ for proc in namesProcesses:
                     
         #nameField = 'totalDeposition_' + aer
         if proc == namesProcesses[0]:
-            fields.append(nameField)
+            fields.append(nameField+'_'+aer)
             dimFields.append(dimField)
             
         fileName = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
