@@ -3,9 +3,6 @@ import os
 import sys
 from scipy.interpolate import interp1d
 
-#from utils_read_list_of_processes import *
-#from utils_global_scaling import *
-
 from statistical_analysis.utils import utils_read_list_of_processes as readList
 
 ######################################
@@ -32,7 +29,7 @@ def interpolate(array, axis, newN):
 # Defines directions and file names
 
 outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
-sessionName   = 'sim-test/'
+sessionName   = 'sim-test-2/'
 statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
 fileFields    = statDir+'list_fields.dat'
@@ -43,10 +40,11 @@ analyseResolution = (1,1,32,32)
 deltaT = 3600.
 
 myrun('mkdir -p '+statDir)
+myrun('mkdir -p '+statDir+'scaling/')
 
 prepareGroundLevel     = True
 prepareAirColums       = True
-prepareTotalDeposition = False
+prepareTotalDeposition = True
 
 ######################################
 # Defines species
@@ -186,7 +184,7 @@ if prepareGroundLevel:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-            fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
 
@@ -251,7 +249,7 @@ if prepareGroundLevel:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-            fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
 
@@ -323,7 +321,7 @@ if prepareAirColums:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-            fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
 
@@ -388,7 +386,7 @@ if prepareAirColums:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-            fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
 
@@ -457,7 +455,7 @@ if prepareTotalDeposition:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
         
-            fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
 
@@ -522,7 +520,7 @@ if prepareTotalDeposition:
             info[2] /= len(namesProcesses)
             info[1]  = np.power( info[1] , 1./len(namesProcesses) )
             
-            fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+            fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
             print ('Writing '+fileScaling+'...')
             info.tofile(fileScaling)
         
@@ -532,10 +530,7 @@ if prepareTotalDeposition:
 f = open(fileFields, 'w')
 print ('Writing '+fileFields+'...')
 
-for i in xrange(len(fields)):
-    field = fields[i]
-    dims  = dimFields[i]
-    
+for (field,dim) in zip(fields,dims):
     f.write(field+':')
     for dim in dims:
         f.write(str(dim)+',')

@@ -50,7 +50,7 @@ def greayscale(matrix, mini, maxi, levels=None, nLevels=32, scale='lin', EPSILON
 # Defines directions and file names
 
 outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
-sessionName   = 'sim-test/'
+sessionName   = 'sim-test-2/'
 statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
 fileFields    = statDir+'list_fields_greyscale.dat'
@@ -59,11 +59,10 @@ fileLevels    = outputDir+sessionName+'levels.dat'
 analyseResolution = 32
 deltaT = 3600.
 MINLOGSCALE = 1.e-50
-#myrun('mkdir -p '+statDir)
 
 prepareGroundLevel     = True
 prepareAirColums       = True
-prepareTotalDeposition = False
+prepareTotalDeposition = True
 
 ######################################
 # Defines species
@@ -149,7 +148,7 @@ if prepareGroundLevel:
 
     for g in Gaz:
         
-        fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
@@ -182,7 +181,7 @@ if prepareGroundLevel:
     tSelect = TSelect(Nt)
 
     for aer in Radios:
-        fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
@@ -233,7 +232,7 @@ if prepareAirColums:
     tSelect = TSelect(Nt)
 
     for g in Gaz:
-        fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
@@ -267,7 +266,7 @@ if prepareAirColums:
     (Nt,Nz,Ny,Nx) = Nradios['']
     tSelect = TSelect(Nt)
     for aer in Radios:
-        fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
@@ -308,7 +307,7 @@ if prepareTotalDeposition:
 
     # for gaz
     for g in Gaz:
-        fileScaling = statDir + nameField + '_' + g + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
         maxi = scaling[3]
         mini = scaling[4]
 
@@ -342,7 +341,7 @@ if prepareTotalDeposition:
     # for aerosols
 
     for aer in Radios:
-        fileScaling = statDir + nameField + '_' + aer + '_globalScaling.bin'
+        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
         maxi = scaling[3]
         mini = scaling[4]
                                 
@@ -381,7 +380,6 @@ if prepareTotalDeposition:
 f = open(fileFields, 'w')
 print ('Writing '+fileFields+'...')
 
-for i in xrange(len(fields)):
-    field = fields[i]
+for field in fields:
     f.write(field+'\n')
 f.close()
