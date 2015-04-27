@@ -1,3 +1,6 @@
+import os
+import sys
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -5,23 +8,37 @@ import utils_read_list_of_processes as readList
 import utils_plot as plot
 
 ######################################
+# run command
+
+def myrun(command):
+    status = os.system(command)
+    print command
+    if status != 0:
+        sys.exit(status)                
+
+######################################
 # Defines directions and file names
 
 outputDir = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
-sessionName = 'sim-test/'
+sessionName = 'sim-test-2/'
 statDir = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
+figDir = outputDir+sessionName+'figures/'
 
-fileFields    = statDir+'list_fields.dat'
+fileFields    = outputDir+sessionName+'list_fields.dat'
 analyseResolution = (1,1,32,32)
-scale = 'lin'
+scale = 'log'
 
 LOGSCALEMIN = 1.e-30
 ######################################
 # Catch name of processes
 namesProcesses = readList.readListOfProcesses(fileProcesses)
+namesProcesses_corrected = []
+
 for name in namesProcesses:
     print(name)
+    namesProcesses_corrected.append(outputDir+sessionName+name)
+namesProcesses = namesProcesses_corrected
 
 # determines grid to plot all the results
 nbrProcesses = len(namesProcesses)
@@ -44,7 +61,14 @@ print(grid)
 namesFields, dimFields = readList.readListOfFields(fileFields)
 for i in xrange(len(namesFields)):
     print(namesFields[i])
-    print(dimFields[i])
+    #print(dimFields[i])
+
+######################################
+# Make directories if necessary
+
+myrun('mkdir -p '+figDir)
+for name in namesFields:
+    myrun('mkdir -p '+figDir+name)
 
 ######################################
 # Log filter
@@ -59,7 +83,7 @@ plotter = 'imshow'
 for i in xrange(len(namesFields)):
     field = namesFields[i]
     dim   = dimFields[i]
-    fileScaling = statDir+field+'_globalScaling.bin'
+    fileScaling = statDir+'scaling/'+field+'_globalScaling.bin'
     
     if len(dim) == 2:
         ax = plot.openFigSubfig(figNbr=2,subFigNbr=111,clear=True)
@@ -102,7 +126,7 @@ for i in xrange(len(namesFields)):
                 if scale == 'log':
                     matrix = log10Filter(matrix)
                 
-                figname = statDir+field+'_model'+str(grid[0]*Y+X)
+                figname = figDir+field+'/model'+str(grid[0]*Y+X)+'_'+scale
                 title   = field+'\nmodel : '+str(grid[0]*Y+X)
                 if transpose:
                     matrix = matrix.transpose()
@@ -121,11 +145,11 @@ for i in xrange(len(namesFields)):
         plt.colorbar(im)
         
         try:
-            figname = statDir+field+'_allmodels.pdf'
+            figname = figDir+field+'/allmodels_'+scale+'.pdf'
             print(figname)
             plt.savefig(figname)
         except:
-            figname = statDir+field+'_allmodels.png'
+            figname = figDir+field+'/allmodels_'+scale+'.png'
             print(figname)
             plt.savefig(figname)
                                     
