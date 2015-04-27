@@ -53,8 +53,8 @@ outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
 sessionName   = 'sim-test-2/'
 statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
-fileFields    = statDir+'list_fields_greyscale.dat'
-fileLevels    = outputDir+sessionName+'levels.dat'
+fileFields    = outputDir+sessionName+'list_fields_greyscale.dat'
+fileLevels    = outputDir+sessionName+'config/levels.dat'
 
 analyseResolution = 32
 deltaT = 3600.
@@ -124,10 +124,13 @@ for (name,n) in Species:
 ######################################
 # Catch name of processes
 namesProcesses = readList.readListOfProcesses(fileProcesses)
+namesProcesses_corrected = []
 for proc in namesProcesses:
     proc = outputDir + sessionName + proc
+    namesProcesses_corrected.append(proc)
     #myrun('mkdir -p '+proc+'/to_analyse')
     #print(proc)
+namesProcesses = namesProcesses_corrected
 
 ######################################    
 # Prepare fields to analyse
@@ -202,7 +205,6 @@ if prepareGroundLevel:
         
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + aer)
-                dimFields.append(dimField)
 
             greyScaleLin = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
@@ -375,7 +377,7 @@ if prepareTotalDeposition:
             np.save(fileNameLog,greyScaleLOG)
 
 ######################################
-# Writes fields name and dimensions
+# Writes fields name
 
 f = open(fileFields, 'w')
 print ('Writing '+fileFields+'...')

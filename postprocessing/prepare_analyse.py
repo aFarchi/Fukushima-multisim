@@ -32,8 +32,8 @@ outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
 sessionName   = 'sim-test-2/'
 statDir       = outputDir+sessionName+'statistics/'
 fileProcesses = outputDir+sessionName+'list_processes.dat'
-fileFields    = statDir+'list_fields.dat'
-fileLevels    = outputDir+sessionName+'levels.dat'
+fileFields    = outputDir+sessionName+'list_fields.dat'
+fileLevels    = outputDir+sessionName+'config/levels.dat'
 
 computeGlobalScaling = True
 analyseResolution = (1,1,32,32)
@@ -42,7 +42,7 @@ deltaT = 3600.
 myrun('mkdir -p '+statDir)
 myrun('mkdir -p '+statDir+'scaling/')
 
-prepareGroundLevel     = True
+prepareGroundLevel     = False
 prepareAirColums       = True
 prepareTotalDeposition = True
 
@@ -104,12 +104,15 @@ for (name,n) in Species:
     #print(name)
     
 ######################################
-# Catch name of processes
+# Catch name of processes and add directory
 namesProcesses = readList.readListOfProcesses(fileProcesses)
+namesProcesses_corrected = []
 for proc in namesProcesses:
     proc = outputDir + sessionName + proc
     myrun('mkdir -p '+proc+'/to_analyse')
+    namesProcesses_corrected.append(proc)
     #print(proc)
+namesProcesses = namesProcesses_corrected
 
 ######################################    
 # Prepare fields to analyse
@@ -530,7 +533,7 @@ if prepareTotalDeposition:
 f = open(fileFields, 'w')
 print ('Writing '+fileFields+'...')
 
-for (field,dim) in zip(fields,dims):
+for (field,dims) in zip(fields,dimFields):
     f.write(field+':')
     for dim in dims:
         f.write(str(dim)+',')
