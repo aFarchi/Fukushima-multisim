@@ -131,7 +131,7 @@ def findNLevels(X, N, space='lin'):
     if space=='lin':
         return np.linspace(mini, maxi, N)
     elif space=='log':
-        return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
+        return np.logspace(np.log10(mini), np.log10(maxi), N)
     
 ##########################################
 # Kolmogorov-Smirnov test

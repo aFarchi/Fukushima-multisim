@@ -65,7 +65,7 @@ def scalingFMmini(modelList):
         maxi = np.maximum( maxi, data )
     return maxi.sum()
 
-def findNLevelsML(modelList, N, space='lin', scalingFile=None, epsilon=1e-50):
+def findNLevelsML(modelList, N, space='lin', scalingFile=None, epsilon=1e-10):
     print ('Finding levels for a list of models')    
 
     try:
@@ -85,5 +85,5 @@ def findNLevelsML(modelList, N, space='lin', scalingFile=None, epsilon=1e-50):
         return np.linspace(mini, maxi, N)
     elif space=='log':
         mini = np.max([mini,epsilon]) 
-        return np.exp( np.logspace(np.log10(mini), np.log10(maxi), N) )
+        return np.logspace(np.log10(mini), np.log10(maxi), N)
 
