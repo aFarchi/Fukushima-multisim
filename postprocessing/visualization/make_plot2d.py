@@ -29,7 +29,7 @@ fileFields    = outputDir+sessionName+'list_fields.dat'
 analyseResolution = (1,1,32,32)
 scale = 'log'
 
-LOGSCALEMIN = 1.e-30
+LOGSCALEMIN = 1.e-8
 ######################################
 # Catch name of processes
 namesProcesses = readList.readListOfProcesses(fileProcesses)

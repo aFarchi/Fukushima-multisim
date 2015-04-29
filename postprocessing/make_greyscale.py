@@ -33,14 +33,14 @@ def greayscale(matrix, mini, maxi, levels=None, nLevels=32, scale='lin', EPSILON
             levels = np.linspace(mini, maxi, nLevels)
         elif scale == 'log':
             mini = np.max([mini,EPSILON])
-            return np.exp( np.logspace(np.log10(mini), np.log10(maxi), nLevels) )
+            levels = np.logspace(np.log10(mini), np.log10(maxi), nLevels)
     else:
         nLevels = len(levels)
 
     CDF = np.zeros(nLevels+1)
 
     for i in xrange(nLevels):
-        CDF[i+1] = ( matrix > levels[i] ).mean()
+        CDF[i+1] = ( matrix < levels[i] ).mean()
 
     CDF[nLevels] = 1.
     PDF = CDF[1:nLevels+1] - CDF[0:nLevels]
@@ -58,7 +58,7 @@ fileLevels    = outputDir+sessionName+'config/levels.dat'
 
 analyseResolution = 32
 deltaT = 3600.
-MINLOGSCALE = 1.e-50
+MINLOGSCALE = 1.e-10
 
 prepareGroundLevel     = True
 prepareAirColums       = True
