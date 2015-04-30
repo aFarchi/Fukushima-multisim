@@ -310,6 +310,7 @@ if prepareTotalDeposition:
     # for gaz
     for g in Gaz:
         fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
+        scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
 
@@ -344,6 +345,7 @@ if prepareTotalDeposition:
 
     for aer in Radios:
         fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
+        scaling = np.fromfile(fileScaling)
         maxi = scaling[3]
         mini = scaling[4]
                                 
