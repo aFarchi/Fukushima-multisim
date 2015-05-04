@@ -73,7 +73,7 @@ deltaT = 3600.
 myrun('mkdir -p '+statDir)
 myrun('mkdir -p '+statDir+'scaling/')
 
-prepareGroundLevel     = False
+prepareGroundLevel     = True
 prepareAirColums       = True
 prepareTotalDeposition = True
 
@@ -177,8 +177,9 @@ if prepareGroundLevel:
         relevantInfo = {}
         for g in Gaz:
             relevantInfo[g] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
+            for lol in LinorLog:
+                relevantInfo[g][lol] = {}
+                for proc in namesProcesses:
                     relevantInfo[g][lol][proc] = np.zeros(nbrRelevantInfo)
 
     for proc in namesProcesses:
@@ -211,16 +212,14 @@ if prepareGroundLevel:
                 relevantInfo[g]['lin'][proc][1] = airGL.var()
                 relevantInfo[g]['lin'][proc][2] = airGL.max()
                 relevantInfo[g]['lin'][proc][3] = airGL.min()
-
             np.save(fileNameLin,airGL)
 
-            airGL = log10(airGL)
+            airGL = log10(airGL,dataType)
             if computeGlobalScaling:
                 relevantInfo[g]['log'][proc][0] = airGL.mean()**2
                 relevantInfo[g]['log'][proc][1] = airGL.var()
                 relevantInfo[g]['log'][proc][2] = airGL.max()
                 relevantInfo[g]['log'][proc][3] = airGL.min()
-
             np.save(fileNameLog,airGL)
 
     if computeGlobalScaling:
@@ -250,8 +249,9 @@ if prepareGroundLevel:
         relevantInfo = {}
         for aer in Radios:
             relevantInfo[aer] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
+            for lol in LinorLog:
+                relevantInfo[aer][lol] = {}
+                for proc in namesProcesses:
                     relevantInfo[aer][lol][proc] = np.zeros(nbrRelevantInfo)
                 
     (Nt,Nz,Ny,Nx) = Nradios['']
@@ -294,7 +294,7 @@ if prepareGroundLevel:
 
             np.save(fileNameLin,airGLAer)
 
-            airGLAer = log10(airGLAer)
+            airGLAer = log10(airGLAer,dataType)
             if computeGlobalScaling:
                 relevantInfo[aer]['log'][proc][0] = airGLAer.mean()**2
                 relevantInfo[aer]['log'][proc][1] = airGLAer.var()
@@ -342,8 +342,9 @@ if prepareAirColums:
         relevantInfo = {}
         for g in Gaz:
             relevantInfo[g] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
+            for lol in LinorLog:
+                relevantInfo[g][lol] = {}
+                for proc in namesProcesses:
                     relevantInfo[g][lol][proc] = np.zeros(nbrRelevantInfo)
 
     (Nt,Nz,Ny,Nx) = Ngaz['']
@@ -380,7 +381,7 @@ if prepareAirColums:
                 relevantInfo[g]['lin'][proc][3] = airColumn.min()        
             np.save(fileNameLin,airColumn)
 
-            airColumn = log10(airColumn)
+            airColumn = log10(airColumn,dataType)
             if computeGlobalScaling:
                 relevantInfo[g]['log'][proc][0] = airColumn.mean()**2
                 relevantInfo[g]['log'][proc][1] = airColumn.var()
@@ -415,8 +416,9 @@ if prepareAirColums:
         relevantInfo = {}
         for aer in Radios:
             relevantInfo[aer] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
+            for lol in LinorLog:
+                relevantInfo[aer][lol] = {}
+                for proc in namesProcesses:
                     relevantInfo[aer][lol][proc] = np.zeros(nbrRelevantInfo)                                        
 
     (Nt,Nz,Ny,Nx) = Nradios['']
@@ -458,7 +460,7 @@ if prepareAirColums:
                 relevantInfo[aer]['lin'][proc][3] = airColumnAer.min()
             np.save(fileNameLin,airColumnAer)
 
-            airColumnAer = log10(airColumnAer)
+            airColumnAer = log10(airColumnAer,dataType)
             if computeGlobalScaling:
                 relevantInfo[aer]['log'][proc][0] = airColumnAer.mean()**2
                 relevantInfo[aer]['log'][proc][1] = airColumnAer.var()
@@ -502,9 +504,10 @@ if prepareTotalDeposition:
         relevantInfo = {}
         for g in Gaz:
             relevantInfo[g] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
-                relevantInfo[g][lol][proc] = np.zeros(nbrRelevantInfo)
+            for lol in LinorLog:
+                relevantInfo[g][lol] = {}
+                for proc in namesProcesses:
+                    relevantInfo[g][lol][proc] = np.zeros(nbrRelevantInfo)
 
     for proc in namesProcesses:
         for g in Gaz:
@@ -543,7 +546,7 @@ if prepareTotalDeposition:
                 relevantInfo[g]['lin'][proc][3] = dep.min()                                                
             np.save(fileNameLin,dep)
 
-            dep = log10(dep)
+            dep = log10(dep,dataType)
             if computeGlobalScaling:
                 relevantInfo[g]['log'][proc][0] = dep.mean()**2
                 relevantInfo[g]['log'][proc][1] = dep.var()
@@ -579,8 +582,9 @@ if prepareTotalDeposition:
         relevantInfo = {}
         for aer in Radios:
             relevantInfo[aer] = {}
-            for proc in namesProcesses:
-                for lol in LinorLog:
+            for lol in LinorLog:
+                relevantInfo[aer][lol] = {}
+                for proc in namesProcesses:
                     relevantInfo[aer][lol][proc] = np.zeros(nbrRelevantInfo)                            
 
     for proc in namesProcesses:
@@ -623,7 +627,7 @@ if prepareTotalDeposition:
                 relevantInfo[aer]['lin'][proc][3] = dep.min()                                                
             np.save(fileNameLin,dep)
 
-            dep = log10(dep)
+            dep = log10(dep,dataType)
             if computeGlobalScaling:
                 relevantInfo[aer]['log'][proc][0] = dep.mean()**2
                 relevantInfo[aer]['log'][proc][1] = dep.var()
