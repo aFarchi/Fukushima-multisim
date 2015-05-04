@@ -26,6 +26,22 @@ def interpolate(array, axis, newN):
     return function(newX)
 
 ######################################
+# Zero Filter
+
+def zeroFilter(array, dataType):
+    MIN_AIRCONCENTRATION = 1.e-10 # in Bq/m^2
+    MIN_DEPOSITION       = 1.e-10 # in Bq/m^3
+
+    if dataType == 0:
+        # for air concentration
+        return np.maximum(array, MIN_AIRCONCENTRATION)
+    elif dataType == 1:
+        # for deposition
+        return np.maximum(array, MIN_DEPOSITION)
+    else:
+        return array
+
+######################################
 # Defines directions and file names
 
 outputDir     = '/cerea_raid/users/farchia/Fukushima-multisim/output/'
@@ -48,6 +64,7 @@ prepareTotalDeposition = True
 
 ######################################
 # Defines species
+# and get resolutions ... -> on devrait prendre ces infos directement des fichiers de configuration !!
 
 AirorDryorWet = ['','dry/','wet/']
 DryorWet      = ['dry/','wet/']
@@ -66,9 +83,12 @@ Nradios['dry/']=(500,1,120,120)
 Nradios['wet/']=(500,1,120,120)
 Nradios['wet/InCloud/']=(500,1,120,120)
 Nradios['wet/BelowCloud/']=(500,1,120,120)
+NradiosDep=(500,1,120,120)
+
 RadioSpecies = {}
 RadioSpecies['Cs137'] = ['Cs137_0','Cs137_1','Cs137_2','Cs137_3','Cs137_4']
 Radios = ['Cs137']
+NgazDep=(500,1,120,120)
 
 Ngaz = {}
 Ngaz['']=(83,15,120,120)#83=floor(3000/36)
@@ -124,6 +144,7 @@ if prepareGroundLevel:
     # Compute ground level air concentration
     # at a given time
     nameField = 'airGroundLevel'
+    dataType  = 0 
     dimField  = (2,3)
     (Nta,Nza,Nya,Nxa) = analyseResolution
 
@@ -155,13 +176,17 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            print ('Writing '+fileName+'...')
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
 
             if Ny > Nya:
                 airGL = interpolate(airGL,0,Nya)
             if Nx > Nxa:
                 airGL = interpolate(airGL,1,Nxa)
+
+            airGL = zeroFilter(airGL, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[g][proc][0] = airGL.mean()**2
@@ -169,7 +194,8 @@ if prepareGroundLevel:
                 relevantInfo[g][proc][2] = airGL.max()
                 relevantInfo[g][proc][3] = airGL.min()
         
-            np.save(fileName,airGL)
+            np.save(fileNameLin,airGL)
+            np.save(fileNameLog,np.log10(airGL))
 
     if computeGlobalScaling:
         for g in Gaz:
@@ -220,13 +246,17 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                         
-            fileName = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
-            print ('Writing '+fileName+'...')
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
 
             if Ny > Nya:
                 airGLAer = interpolate(airGLAer,0,Nya)
             if Nx > Nxa:
                 airGLAer = interpolate(airGLAer,1,Nxa)
+
+            airGLAer = zeroFilter(airGLAer, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[aer][proc][0] = airGLAer.mean()**2
@@ -234,8 +264,9 @@ if prepareGroundLevel:
                 relevantInfo[aer][proc][2] = airGLAer.max()
                 relevantInfo[aer][proc][3] = airGLAer.min()
                                                                 
-            np.save(fileName,airGLAer)
-
+            np.save(fileNameLin,airGLAer)
+            np.save(fileNameLog,np.log10(airGLAer))
+            
     if computeGlobalScaling:
         for aer in Radios:
             info = np.zeros(5)
@@ -261,6 +292,7 @@ if prepareAirColums:
     # Compute columns of air concentration
     # at a given time
     nameField = 'airColumn'
+    dataType  = 0 
     dimField  = (2,3)
     (Nta,Nza,Nya,Nxa) = analyseResolution
     weights = np.diff(readList.catchLevelsFromFile(fileLevels))
@@ -292,13 +324,17 @@ if prepareAirColums:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            print ('Writing '+fileName+'...')
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
 
             if Ny > Nya:
                 airColumn = interpolate(airColumn,0,Nya)
             if Nx > Nxa:
                 airColumn = interpolate(airColumn,1,Nxa)
+
+            airColumn = zeroFilter(airColumn, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[g][proc][0] = airColumn.mean()**2
@@ -306,7 +342,8 @@ if prepareAirColums:
                 relevantInfo[g][proc][2] = airColumn.max()
                 relevantInfo[g][proc][3] = airColumn.min()
         
-            np.save(fileName,airColumn)
+            np.save(fileNameLin,airColumn)
+            np.save(fileNameLog,np.log10(airColumn))
 
     if computeGlobalScaling:
         for g in Gaz:
@@ -357,13 +394,17 @@ if prepareAirColums:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                 
-            fileName = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
-            print ('Writing '+fileName+'...')
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
 
             if Ny > Nya:
                 airColumnAer = interpolate(airColumnAer,0,Nya)
             if Nx > Nxa:
                 airColumnAer = interpolate(airColumnAer,1,Nxa)
+
+            airColumnAer = zeroFilter(airColumnAer, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[aer][proc][0] = airColumnAer.mean()**2
@@ -371,7 +412,8 @@ if prepareAirColums:
                 relevantInfo[aer][proc][2] = airColumnAer.max()
                 relevantInfo[aer][proc][3] = airColumnAer.min()
                                                                 
-            np.save(fileName,airColumnAer)
+            np.save(fileNameLin,airColumnAer)
+            np.save(fileNameLog,np.log10(airColumnAer))
 
     if computeGlobalScaling:
         for aer in Radios:
@@ -397,10 +439,12 @@ if prepareTotalDeposition:
     ######################################
     # Cumul of the deposition
     nameField = 'totalDeposition'
+    dataType  = 1 
     dimField  = (2,3)
     (Nta,Nza,Nya,Nxa) = analyseResolution
 
     # for gaz
+    (Ntd,Nzd,Nyd,Nxd) = NgazDep
     if computeGlobalScaling:
         nbrRelevantInfo = 4
         relevantInfo = {}
@@ -411,7 +455,7 @@ if prepareTotalDeposition:
 
     for proc in namesProcesses:
         for g in Gaz:
-            dep = np.zeros(shape=(Ny,Nx))
+            dep = np.zeros(shape=(Nyd,Nxd))
             for DoW in DryorWet:
                 (Nt,Nz,Ny,Nx) = Ngaz[DoW]
                 fileName = proc + '/' + DoW + g + '.bin'
@@ -420,19 +464,24 @@ if prepareTotalDeposition:
                 data = data.reshape((Nt,Nz,Ny,Nx))
                 data = data.cumsum(axis=0)*deltaT
                 data = data[Nt-1, 0,:,:]
+                #test here if Ny == Nyd and Nx == Nxd
                 dep += data
 
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
             
-            fileName = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            print ('Writing '+fileName+'...')
-
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
+            
             if Ny > Nya:
                 dep = interpolate(dep,0,Nya)
             if Nx > Nxa:
                 dep = interpolate(dep,1,Nxa)
+
+            dep = zeroFilter(dep, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[g][proc][0] = dep.mean()**2
@@ -440,7 +489,8 @@ if prepareTotalDeposition:
                 relevantInfo[g][proc][2] = dep.max()
                 relevantInfo[g][proc][3] = dep.min()                                                
 
-            np.save(fileName,dep)
+            np.save(fileNameLin,dep)
+            np.save(fileNameLog,np.log10(dep))
                              
     if computeGlobalScaling:
         for g in Gaz:
@@ -463,6 +513,7 @@ if prepareTotalDeposition:
             info.tofile(fileScaling)
 
     # for aerosols
+    (Ntd,Nzd,Nyd,Nxd) = NradiosDep    
     if computeGlobalScaling:
         nbrRelevantInfo = 4
         relevantInfo = {}
@@ -473,7 +524,7 @@ if prepareTotalDeposition:
 
     for proc in namesProcesses:
         for aer in Radios:
-            dep = np.zeros(shape=(Ny,Nx))
+            dep = np.zeros(shape=(Nyd,Nxd))
 
             for rSpe in RadioSpecies[aer]:
                 for DoW in DryorWet:
@@ -485,19 +536,24 @@ if prepareTotalDeposition:
                         data = data.reshape((Nt,Nz,Ny,Nx))
                         data = data.cumsum(axis=0)*deltaT
                         data = data[Nt-1, 0,:,:]
+                        #test here if Ny == Nyd and Nx == Nxd
                         dep += data
                     
             if proc == namesProcesses[0]:
                 fields.append(nameField+'_'+aer)
                 dimFields.append(dimField)
             
-            fileName = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
-            print ('Writing '+fileName+'...')
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_log.npy'
+            print ('Writing '+fileNameLin+'...')
+            print ('Writing '+fileNameLog+'...')
             
             if Ny > Nya:
                 dep = interpolate(dep,0,Nya)
             if Nx > Nxa:
                 dep = interpolate(dep,1,Nxa)
+
+            dep = zeroFilter(dep, dataType)
 
             if computeGlobalScaling:
                 relevantInfo[aer][proc][0] = dep.mean()**2
@@ -505,7 +561,8 @@ if prepareTotalDeposition:
                 relevantInfo[aer][proc][2] = dep.max()
                 relevantInfo[aer][proc][3] = dep.min()                                                
         
-            np.save(fileName,dep)
+            np.save(fileNameLin,dep)
+            np.save(fileNameLog,np.log10(dep))
 
     if computeGlobalScaling:
         for aer in Radios:
