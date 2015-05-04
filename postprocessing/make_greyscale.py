@@ -26,6 +26,22 @@ def interpolate(array, axis, newN):
     return function(newX)
 
 ######################################
+# log10 function
+
+def log10(array, dataType):
+    # applies and shift log so that minimum value returns zero
+    
+    MIN_AIRCONCENTRATION = 1.e-10 # in Bq/m^2
+    MIN_DEPOSITION       = 1.e-10 # in Bq/m^3
+    
+    if dataType == 0:
+        return np.log10(array) + MIN_AIRCONCENTRATION
+    elif dataType == 1:
+        return np.log10(array) + MIN_DEPOSITION
+    else:
+        return np.log10(array)
+
+######################################
 # Greyscale function
 def greayscale(matrix, mini, maxi, levels=None, nLevels=32, scale='lin', EPSILON=1.e-50):
     if levels is None:
@@ -66,6 +82,8 @@ prepareTotalDeposition = True
 
 ######################################
 # Defines species
+
+LinorLog = ['lin','log']
 
 AirorDryorWet = ['','dry/','wet/']
 DryorWet      = ['dry/','wet/']
@@ -145,6 +163,7 @@ if prepareGroundLevel:
     # Compute ground level air concentration
     # at a given time
     nameField = 'airGroundLevel'
+    dataType  = 0
 
     def TSelect(Nt):
         return int(np.floor(Nt/2.))
@@ -154,12 +173,6 @@ if prepareGroundLevel:
     tSelect = TSelect(Nt)
 
     for g in Gaz:
-        
-        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-                                        
         for proc in namesProcesses:
 
             fileName = proc + '/' + g + '.bin'
@@ -172,29 +185,26 @@ if prepareGroundLevel:
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + g)
 
-            greyScaleLin = greayscale(airGL, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(airGL, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
-        
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
 
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+                if lol == 'log':
+                    airGL = log10(airGL,dataType)
+
+                greyScale = greayscale(airGL, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)
 
     # for aerosols
     (Nt,Nz,Ny,Nx) = Nradios['']
     tSelect = TSelect(Nt)
 
     for aer in Radios:
-        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-
-        for proc in namesProcesses:
-    
+        for proc in namesProcesses:    
             airGLAer = np.zeros(shape=(Ny,Nx))
             weight = 0.
             for rSpe in RadioSpecies[aer]:
@@ -210,23 +220,26 @@ if prepareGroundLevel:
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + aer)
 
-            greyScaleLin = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
-                        
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
-
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
-
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
+                
+                if lol == 'log':
+                    airGLAer = log10(airGLAer,dataType)
+                    
+                greyScale = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)
             
 if prepareAirColums:
     ######################################
     # Compute columns of air concentration
     # at a given time
     nameField = 'airColumn'
+    dataType = 0
     weights = np.diff(readList.catchLevelsFromFile(fileLevels))
 
     def TSelect(Nt):
@@ -238,11 +251,6 @@ if prepareAirColums:
     tSelect = TSelect(Nt)
 
     for g in Gaz:
-        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-                                    
         for proc in namesProcesses:
         
             fileName = proc + '/' + g + '.bin'
@@ -255,28 +263,25 @@ if prepareAirColums:
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + g)
 
-            greyScaleLin = greayscale(airColumn, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(airColumn, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
-
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
-
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+                if lol == 'log':
+                    airColumn = log10(airColumn,dataType)
+                    
+                greyScale = greayscale(airColumn, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)
 
     # for aerosols
 
     (Nt,Nz,Ny,Nx) = Nradios['']
     tSelect = TSelect(Nt)
     for aer in Radios:
-        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-                                        
         for proc in namesProcesses:
 
             airColumnAer = np.zeros(shape=(Ny,Nx))
@@ -294,31 +299,28 @@ if prepareAirColums:
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + aer)
 
-            greyScaleLin = greayscale(airColumnAer, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(airColumnAer, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
-            
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
-
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+                if lol == 'log':
+                    airColumnAer = log10(airColumnAer,dataType)
+                    
+                greyScale = greayscale(airColumnAer, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)
 
 if prepareTotalDeposition:
     ######################################
     # Cumul of the deposition
     nameField = 'totalDeposition'
-
+    dataType  = 1
     # for gaz
     (Ntd,Nzd,Nyd,Nxd) = NgazDep
     for g in Gaz:
-        fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-
         for proc in namesProcesses:
             dep = np.zeros(shape=(Nyd,Nxd))
             for DoW in DryorWet:
@@ -334,27 +336,24 @@ if prepareTotalDeposition:
 
             if proc == namesProcesses[0]:
                 fields.append(nameField + '_' + g)
-                
-            greyScaleLin = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
 
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
-
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+                if lol == 'log':
+                    dep = log10(dep,dataType)
+                    
+                greyScale = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)            
                                                                                     
     # for aerosols
     (Ntd,Nzd,Nyd,Nxd) = NradiosDep
     for aer in Radios:
-        fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
-        scaling = np.fromfile(fileScaling)
-        maxi = scaling[3]
-        mini = scaling[4]
-                                
         for proc in namesProcesses:
             dep = np.zeros(shape=(Nyd,Nxd))
             for rSpe in RadioSpecies[aer]:
@@ -373,17 +372,20 @@ if prepareTotalDeposition:
             if proc == namesProcesses[0]:
                 fields.append(nameField+'_'+aer)
 
-            greyScaleLin = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
-            greyScaleLOG = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
-                        
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
-            
-            print ('Writing '+fileNameLin+'...')
-            print ('Writing '+fileNameLog+'...')
-            
-            np.save(fileNameLin,greyScaleLin)
-            np.save(fileNameLog,greyScaleLOG)
+            for lol in LinorLog:
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
+                scaling = np.fromfile(fileScaling)
+                maxi = scaling[3]
+                mini = scaling[4]
+
+                if lol == 'log':
+                    dep = log10(dep,dataType)
+                    
+                greyScale = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
+                fileName = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_'+lol+'.npy'
+                print ('Writing '+fileName+'...')
+                np.save(fileName,greyScale)
+
 
 ######################################
 # Writes fields name

@@ -194,8 +194,8 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -240,7 +240,7 @@ if prepareGroundLevel:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
 
@@ -274,8 +274,8 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -319,7 +319,7 @@ if prepareGroundLevel:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
 
@@ -361,8 +361,8 @@ if prepareAirColums:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -405,7 +405,7 @@ if prepareAirColums:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
 
@@ -439,8 +439,8 @@ if prepareAirColums:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -483,7 +483,7 @@ if prepareAirColums:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
 
-                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
 
@@ -524,8 +524,8 @@ if prepareTotalDeposition:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
             
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
             
@@ -568,7 +568,7 @@ if prepareTotalDeposition:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
         
-                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
 
@@ -604,8 +604,8 @@ if prepareTotalDeposition:
                 fields.append(nameField+'_'+aer)
                 dimFields.append(dimField)
             
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + 'lin.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + 'log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
             
@@ -648,7 +648,7 @@ if prepareTotalDeposition:
                 info[2] /= len(namesProcesses)
                 info[1]  = np.power( info[1] , 1./len(namesProcesses) )
                 
-                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling' + lol + '.bin'
+                fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling_' + lol + '.bin'
                 print ('Writing '+fileScaling+'...')
                 info.tofile(fileScaling)
         
