@@ -46,26 +46,20 @@ class GlobalLinearAnalyseResult:
         self.FM           = np.zeros(shape=(Nmodels,Nmodels,NlevelsFM))
         self.FA           = np.zeros(shape=(Nmodels,Nmodels,NlevelsAlpha))
 
-    def tofile(self,fileName):
-        f = open(fileName, 'w')
-        mat = np.zeros(3)
-        mat[0] = self.Nmodels
-        mat[1] = self.NlevelsFM
-        mat[2] = self.NlevelsAlpha
-        mat.tofile(f)
-        self.MSE.tofile(f)
-        self.FMmini.tofile(f)
-        self.bias.tofile(f)
-        self.PCC.tofile(f)
-        self.BcMSE.tofile(f)
-        self.TSS.tofile(f)
-        self.FOEX.tofile(f)
-        self.KS.tofile(f)
-        self.FM.tofile(f)
-        self.FA.tofile(f)
-        f.close()
-        print(fileName)
-        
+    def fill(self):
+        for i in xrange(self.Nmodels):
+            for j in xrange(i):
+                self.MSE[j,i]    = self.MSE[i,j]
+                self.FMmini[j,i] = self.FMmini[i,j]
+                self.bias[j,i]   = self.bias[i,j]
+                self.PCC[j,i]    = self.PCC[i,j]
+                self.BcMSE[j,i]  = self.BcMSE[i,j]
+                self.TSS[j,i]    = self.TSS[i,j]
+                self.FOEX[j,i]   = self.FOEX[i,j]
+                self.KS[j,i]     = self.KS[i,j]
+                self.FM[j,i,:]   = self.FM[i,j,:]
+                self.FA[j,i,:]   = self.FA[i,j,:]
+
 class GlobalLinearAnalyse:
     '''
     class to perform a global linear analyse
@@ -152,6 +146,7 @@ class GlobalLinearAnalyse:
                     print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)+'.')
                 self.performAnalyseOn(i,j)
 
+        self.results.fill()
         return self.results
 
 class GlobalLogAnalyseResult:
@@ -164,19 +159,15 @@ class GlobalLogAnalyseResult:
         self.geomBias = np.zeros(shape=(Nmodels,Nmodels))
         self.PCClog   = np.zeros(shape=(Nmodels,Nmodels))
         self.KSlog    = np.zeros(shape=(Nmodels,Nmodels))
-        
-    def tofile(self,fileName):
-        f = open(fileName, 'w')
-        mat = np.zeros(1)
-        mat[0] = self.Nmodels
-        mat.tofile(f)
-        self.geomVar.tofile(f)
-        self.geomBias.tofile(f)
-        self.PCClog.tofile(f)
-        self.KSlog.tofile(f)
-        f.close()
-        print(fileName)
-        
+
+    def fill(self):
+        for i in xrange(self.Nmodels):
+            for j in xrange(i):
+                self.geomVar[j,i]  = self.geomVar[i,j]
+                self.geomBias[j,i] = self.geomBias[i,j]
+                self.PCClog[j,i]   = self.PCClog[i,j]
+                self.KSlog[j,i]    = self.KSlog[i,j]
+                
 class GlobalLogAnalyse:
     '''
     class to perform a global log analyse
@@ -220,6 +211,7 @@ class GlobalLogAnalyse:
                 if printLog:
                     print('Analysing correlation bewteen model '+str(i)+' and model '+str(j)+'.')
                 self.performAnalyseOn(i,j)
-                
+
+        self.results.fill()
         return self.results
                                                                                     
