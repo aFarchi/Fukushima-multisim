@@ -26,9 +26,11 @@ def interpolate(array, axis, newN):
     return function(newX)
 
 ######################################
-# Zero Filter
+# Zero Filter and log10 function
 
 def zeroFilter(array, dataType):
+    # replace zero values by a minimum value
+    
     MIN_AIRCONCENTRATION = 1.e-10 # in Bq/m^2
     MIN_DEPOSITION       = 1.e-10 # in Bq/m^3
 
@@ -40,6 +42,19 @@ def zeroFilter(array, dataType):
         return np.maximum(array, MIN_DEPOSITION)
     else:
         return array
+
+def log10(array, dataType):
+    # applies and shift log so that minimum value returns zero
+    
+    MIN_AIRCONCENTRATION = 1.e-10 # in Bq/m^2
+    MIN_DEPOSITION       = 1.e-10 # in Bq/m^3
+
+    if dataType == 0:
+        return np.log10(array) + MIN_AIRCONCENTRATION
+    elif dataType == 1:
+        return np.log10(array) + MIN_DEPOSITION
+    else:
+        return np.log10(array)
 
 ######################################
 # Defines directions and file names
@@ -149,7 +164,7 @@ if prepareGroundLevel:
     (Nta,Nza,Nya,Nxa) = analyseResolution
 
     def TSelect(Nt):
-        return Nt - 1 
+        return int(np.floor(Nt/2.))
 
     # for gaz
     (Nt,Nz,Ny,Nx) = Ngaz['']
@@ -195,7 +210,7 @@ if prepareGroundLevel:
                 relevantInfo[g][proc][3] = airGL.min()
         
             np.save(fileNameLin,airGL)
-            np.save(fileNameLog,np.log10(airGL))
+            np.save(fileNameLog,log10(airGL))
 
     if computeGlobalScaling:
         for g in Gaz:
@@ -265,7 +280,7 @@ if prepareGroundLevel:
                 relevantInfo[aer][proc][3] = airGLAer.min()
                                                                 
             np.save(fileNameLin,airGLAer)
-            np.save(fileNameLog,np.log10(airGLAer))
+            np.save(fileNameLog,log10(airGLAer))
             
     if computeGlobalScaling:
         for aer in Radios:
@@ -298,7 +313,7 @@ if prepareAirColums:
     weights = np.diff(readList.catchLevelsFromFile(fileLevels))
 
     def TSelect(Nt):
-        return Nt - 1
+        return int(np.floor(Nt/2.))
     
     # for gaz
     if computeGlobalScaling:
@@ -343,7 +358,7 @@ if prepareAirColums:
                 relevantInfo[g][proc][3] = airColumn.min()
         
             np.save(fileNameLin,airColumn)
-            np.save(fileNameLog,np.log10(airColumn))
+            np.save(fileNameLog,log10(airColumn))
 
     if computeGlobalScaling:
         for g in Gaz:
@@ -413,7 +428,7 @@ if prepareAirColums:
                 relevantInfo[aer][proc][3] = airColumnAer.min()
                                                                 
             np.save(fileNameLin,airColumnAer)
-            np.save(fileNameLog,np.log10(airColumnAer))
+            np.save(fileNameLog,log10(airColumnAer))
 
     if computeGlobalScaling:
         for aer in Radios:
@@ -490,7 +505,7 @@ if prepareTotalDeposition:
                 relevantInfo[g][proc][3] = dep.min()                                                
 
             np.save(fileNameLin,dep)
-            np.save(fileNameLog,np.log10(dep))
+            np.save(fileNameLog,log10(dep))
                              
     if computeGlobalScaling:
         for g in Gaz:
@@ -562,7 +577,7 @@ if prepareTotalDeposition:
                 relevantInfo[aer][proc][3] = dep.min()                                                
         
             np.save(fileNameLin,dep)
-            np.save(fileNameLog,np.log10(dep))
+            np.save(fileNameLog,log10(dep))
 
     if computeGlobalScaling:
         for aer in Radios:

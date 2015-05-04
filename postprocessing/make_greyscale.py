@@ -58,10 +58,10 @@ fileLevels    = outputDir+sessionName+'config/levels.dat'
 
 analyseResolution = 32
 deltaT = 3600.
-MINLOGSCALE = 1.e-10
+MINLOGSCALE = 1.e-20
 
-prepareGroundLevel     = True
-prepareAirColums       = True
+prepareGroundLevel     = False
+prepareAirColums       = False
 prepareTotalDeposition = True
 
 ######################################
@@ -84,6 +84,8 @@ Nradios['dry/']=(500,1,120,120)
 Nradios['wet/']=(500,1,120,120)
 Nradios['wet/InCloud/']=(500,1,120,120)
 Nradios['wet/BelowCloud/']=(500,1,120,120)
+NradiosDep=(500,1,120,120)
+
 RadioSpecies = {}
 RadioSpecies['Cs137'] = ['Cs137_0','Cs137_1','Cs137_2','Cs137_3','Cs137_4']
 Radios = ['Cs137']
@@ -92,6 +94,8 @@ Ngaz = {}
 Ngaz['']=(83,15,120,120)#83=floor(3000/36)
 Ngaz['dry/']=(500,1,120,120)
 Ngaz['wet/']=(500,1,120,120)
+NgazDep=(500,1,120,120)
+
 Gaz = ['I2']
 
 ######################################
@@ -143,7 +147,7 @@ if prepareGroundLevel:
     nameField = 'airGroundLevel'
 
     def TSelect(Nt):
-        return Nt - 1 
+        return int(np.floor(Nt/2.))
 
     # for gaz
     (Nt,Nz,Ny,Nx) = Ngaz['']
@@ -226,7 +230,7 @@ if prepareAirColums:
     weights = np.diff(readList.catchLevelsFromFile(fileLevels))
 
     def TSelect(Nt):
-        return Nt - 1
+        return int(np.floor(Nt/2.))
     
     # for gaz
 
@@ -308,6 +312,7 @@ if prepareTotalDeposition:
     nameField = 'totalDeposition'
 
     # for gaz
+    (Ntd,Nzd,Nyd,Nxd) = NgazDep
     for g in Gaz:
         fileScaling = statDir + 'scaling/' + nameField + '_' + g + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
@@ -315,7 +320,7 @@ if prepareTotalDeposition:
         mini = scaling[4]
 
         for proc in namesProcesses:
-            dep = np.zeros(shape=(Ny,Nx))
+            dep = np.zeros(shape=(Nyd,Nxd))
             for DoW in DryorWet:
                 (Nt,Nz,Ny,Nx) = Ngaz[DoW]
                 fileName = proc + '/' + DoW + g + '.bin'
@@ -324,6 +329,7 @@ if prepareTotalDeposition:
                 data = data.reshape((Nt,Nz,Ny,Nx))
                 data = data.cumsum(axis=0)*deltaT
                 data = data[Nt-1, 0,:,:]
+                #test here if Ny == Nyd and Nx == Nxd
                 dep += data
 
             if proc == namesProcesses[0]:
@@ -342,7 +348,7 @@ if prepareTotalDeposition:
             np.save(fileNameLog,greyScaleLOG)
                                                                                     
     # for aerosols
-
+    (Ntd,Nzd,Nyd,Nxd) = NradiosDep
     for aer in Radios:
         fileScaling = statDir + 'scaling/' + nameField + '_' + aer + '_globalScaling.bin'
         scaling = np.fromfile(fileScaling)
@@ -350,7 +356,7 @@ if prepareTotalDeposition:
         mini = scaling[4]
                                 
         for proc in namesProcesses:
-            dep = np.zeros(shape=(Ny,Nx))
+            dep = np.zeros(shape=(Nyd,Nxd))
             for rSpe in RadioSpecies[aer]:
                 for DoW in DryorWet:
                     for IoB in InorBelow_DoW[DoW]:
@@ -361,6 +367,7 @@ if prepareTotalDeposition:
                         data = data.reshape((Nt,Nz,Ny,Nx))
                         data = data.cumsum(axis=0)*deltaT
                         data = data[Nt-1, 0,:,:]
+                        #test here if Ny == Nyd and Nx == Nxd
                         dep += data
                     
             if proc == namesProcesses[0]:
