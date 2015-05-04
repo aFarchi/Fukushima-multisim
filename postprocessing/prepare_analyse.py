@@ -194,8 +194,8 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -274,8 +274,8 @@ if prepareGroundLevel:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -361,8 +361,8 @@ if prepareAirColums:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -439,8 +439,8 @@ if prepareAirColums:
                 fields.append(nameField + '_' + aer)
                 dimFields.append(dimField)
                 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer +'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer +'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
 
@@ -524,8 +524,8 @@ if prepareTotalDeposition:
                 fields.append(nameField + '_' + g)
                 dimFields.append(dimField)
             
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + 'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + 'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
             
@@ -604,8 +604,8 @@ if prepareTotalDeposition:
                 fields.append(nameField+'_'+aer)
                 dimFields.append(dimField)
             
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '.npy'
-            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_log.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + 'lin.npy'
+            fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + 'log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
             

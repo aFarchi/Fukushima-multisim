@@ -175,7 +175,7 @@ if prepareGroundLevel:
             greyScaleLin = greayscale(airGL, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(airGL, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
             print ('Writing '+fileNameLin+'...')
             print ('Writing '+fileNameLog+'...')
@@ -213,7 +213,7 @@ if prepareGroundLevel:
             greyScaleLin = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(airGLAer, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
                         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
 
             print ('Writing '+fileNameLin+'...')
@@ -258,7 +258,7 @@ if prepareAirColums:
             greyScaleLin = greayscale(airColumn, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(airColumn, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
 
             print ('Writing '+fileNameLin+'...')
@@ -297,7 +297,7 @@ if prepareAirColums:
             greyScaleLin = greayscale(airColumnAer, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(airColumnAer, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
             
             print ('Writing '+fileNameLin+'...')
@@ -338,7 +338,7 @@ if prepareTotalDeposition:
             greyScaleLin = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
 
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + g + '_greyscale_log.npy'
 
             print ('Writing '+fileNameLin+'...')
@@ -376,7 +376,7 @@ if prepareTotalDeposition:
             greyScaleLin = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='lin')
             greyScaleLOG = greayscale(dep, mini, maxi, nLevels=analyseResolution, scale='log', EPSILON=MINLOGSCALE)
                         
-            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale.npy'
+            fileNameLin = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_lin.npy'
             fileNameLog = proc + '/to_analyse/' + nameField + '_' + aer + '_greyscale_log.npy'
             
             print ('Writing '+fileNameLin+'...')
