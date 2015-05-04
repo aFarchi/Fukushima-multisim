@@ -76,8 +76,8 @@ analyseResolution = 32
 deltaT = 3600.
 MINLOGSCALE = 1.e-20
 
-prepareGroundLevel     = False
-prepareAirColums       = False
+prepareGroundLevel     = True
+prepareAirColums       = True
 prepareTotalDeposition = True
 
 ######################################
