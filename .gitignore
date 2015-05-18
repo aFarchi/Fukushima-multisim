@@ -1,3 +1,5 @@
+postprocessing/old/*
+
 # Ignores output data
 output/*
 
