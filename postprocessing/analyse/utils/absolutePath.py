@@ -1,5 +1,5 @@
 def modulePath():
-    return '/cerea_raid/users/farchia/Fukushima-multisim/postprocessing/analyse'
+    return '/cerea_raid/users/farchia/Fukushima-multisim/postprocessing/analyse/'
 
 def moduleLauncher():
     return '/cerea_raid/users/farchia/Fukushima-multisim/postprocessing/launcher.py'

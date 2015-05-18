@@ -10,5 +10,5 @@ def selectFirstT(Nt):
 
 def makeSelectXtimesNt(x):
     def selectXtimes(Nt):
-        return min(int(Nx * t), Nt-1)
+        return min(int(Nt * x), Nt-1)
     return selectXtimes

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 fileProcesses='$fileProcesses$'
-nodes='$fileNodes$'
+nodes='$nodesFile$'
 logfile='$logFile$'
 launcher='$launcher$'
 

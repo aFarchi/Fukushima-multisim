@@ -2,11 +2,11 @@
 import os
 import sys
 
-from analyseV2.preprocessRawData.preprocessRawData          import prepareSpecies
-from analyseV2.utils.tSelection.defaultTSelect              import makeSelectXtimesNt
-from analyseV2.statisticalAnalyse.performStatisticalAnalyse import analyseAllFields
-from analyseV2.greyScaleAnalyse.mergeOTGSResults            import mergeOTGSResults
-from analyseV2.greyScaleAnalyse.applyGreyScale              import applyGStoSpecies
+from analyse.preprocessRawData.preprocessRawData          import prepareSpecies
+from analyse.utils.tSelection.defaultTSelect              import makeSelectXtimesNt
+#from analyse.statisticalAnalyse.performStatisticalAnalyse import analyseAllFields
+#from analyse.greyScaleAnalyse.mergeOTGSResults            import mergeOTGSResults
+#from analyse.greyScaleAnalyse.applyGreyScale              import applyGStoSpecies
 
 # Read the list of parameters
 

@@ -94,7 +94,7 @@ def addFMScaling(scaling, scalingFM, fieldList, procList):
         for lol in ['lin','log']:
             mean = 0.0
             for proc in procList:
-                mean += scalingFM[lol][airField][proc]
-            scaling[airField][lol].scalingFM = mean / len(procList)
+                mean += scalingFM[lol][field][proc]
+            scaling[field][lol].scalingFM = mean / len(procList)
 
     return scaling

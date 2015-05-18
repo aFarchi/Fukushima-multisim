@@ -7,7 +7,7 @@ import numpy as np
 class Log10Function:
 
     def __init__(self, minValues=None):
-        if minValues isNone:
+        if minValues is None:
             minValues            = {}
             minValues['air/']    = 1.e-10 # in Bq/m^2
             minValues['ground/'] = 1.e-10 # in Bq/m^3

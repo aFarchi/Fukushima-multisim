@@ -30,7 +30,7 @@ class ListOfSpecies:
         # STILL NEED TO WRITE THIS FUNCTION
         raise ValueError('Not implemented')
 
-    def defaulInit(self):
+    def defaultInit(self):
         self.speciesList['gaz']                = ['I2']
         self.speciesList['radios']             = ['Cs137']
         
