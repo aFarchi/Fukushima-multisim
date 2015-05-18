@@ -16,7 +16,7 @@ class ZeroFilter:
 
     def __call__(self, matrix, dataType):
         try:
-            minVal = self.minValue[dataType]
+            minVal = self.minValues[dataType]
             return np.maximum(matrix, minVal)
         except:
             return matrix

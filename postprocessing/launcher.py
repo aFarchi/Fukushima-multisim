@@ -4,9 +4,9 @@ import sys
 
 from analyse.preprocessRawData.preprocessRawData          import prepareSpecies
 from analyse.utils.tSelection.defaultTSelect              import makeSelectXtimesNt
-#from analyse.statisticalAnalyse.performStatisticalAnalyse import analyseAllFields
-#from analyse.greyScaleAnalyse.performOTGSAnalyse          import mergeOTGSResults
-#from analyse.greyScaleAnalyse.applyGreyScale              import applyGStoSpecies
+from analyse.statisticalAnalyse.performStatisticalAnalyse import analyseAllFields
+from analyse.greyScaleAnalyse.performOTGSAnalyse          import mergeOTGSResults
+from analyse.greyScaleAnalyse.applyGS                     import applyGStoSpecies
 
 # Read the list of parameters
 

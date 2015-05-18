@@ -15,7 +15,7 @@ class Log10Function:
 
     def __call__(self, matrix, dataType):
         try:
-            minVal = self.minValue[dataType]
+            minVal = self.minValues[dataType]
             return np.log10(matrix) +  minVal
         except:
             return np.log10(matrix)
