@@ -1,4 +1,5 @@
 postprocessing/old/*
+postprocessing/old-analyse/*
 
 # Ignores output data
 output/*
