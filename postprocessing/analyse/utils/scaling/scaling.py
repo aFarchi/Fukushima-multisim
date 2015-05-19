@@ -74,7 +74,7 @@ def mergeScalings(scalings, maximums, fieldList, procList):
                     maxi = scalings[lol][field][proc].maxi
 
             meanMeans    /= len(procList)
-            geomMeanMeans = np.power( geomMeanMeans , 1. / len(procList) )
+            geomMeanMeans = np.power(max(geomMeanMeans, 0.0), 1./len(procList))
             meanVars     /= len(procList)
 
             scale                      = Scaling()

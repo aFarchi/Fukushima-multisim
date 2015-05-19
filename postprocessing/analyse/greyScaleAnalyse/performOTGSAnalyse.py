@@ -215,7 +215,7 @@ def mergeOTGSResults(nbrProc, directory, algoName, printIO=False):
     results = np.zeros(shape = (nbrProc,nbrProc))
     for p1 in xrange(nbrProc):
         for p2 in xrange(p1):
-            res = directoy + str(p1) + '-' + str(p2) + '/output_'+algoName+'/result.bin'
+            res = directory + str(p1) + '-' + str(p2) + '/output_'+algoName+'/result.bin'
             f = open(res, 'rb')
             p = pck.Unpickler(f)
             results[p1,p2] = p.load()
