@@ -11,7 +11,7 @@ class Log10Function:
             minValues            = {}
             minValues['air/']    = 1.e-10 # in Bq/m^2
             minValues['ground/'] = 1.e-10 # in Bq/m^3
-            self.minValues = minValues
+        self.minValues = minValues
 
     def __call__(self, matrix, dataType):
         try:
