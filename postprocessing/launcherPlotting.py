@@ -15,19 +15,32 @@ for arg in sys.argv:
 # launch the correct function
 
 if arguments['FUNCTION'] == 'plot2dFields':
-    outputDir   = arguments['OUTPUT_DIR']
-    sessionName = arguments['SESSION_NAME']
-    statDir     = arguments['STAT_DIR']
-    figDir      = arguments['FIG_DIR']
-    nLevels     = int(arguments['N_LEVELS'])
-    AOG         = arguments['AOG']
-    fieldName   = arguments['FIELD_NAME']
-    lol         = arguments['LOL']
-    species     = arguments['SPECIES']
-    xLabel      = arguments['XLABEL']
-    yLabel      = arguments['YLABEL']
-    plotter     = arguments['PLOTTER']
-    printIO     = ( arguments['PRINT_IO'] == 'True' )
+    outputDir     = arguments['OUTPUT_DIR']
+    sessionName   = arguments['SESSION_NAME']
+    statDir       = arguments['STAT_DIR']
+    figDir        = arguments['FIG_DIR']
+    nLevels       = int(arguments['N_LEVELS'])
+    AOG           = arguments['AOG']
+    fieldName     = arguments['FIELD_NAME']
+    lol           = arguments['LOL']
+    species       = arguments['SPECIES']
+    xLabel        = arguments['XLABEL']
+    yLabel        = arguments['YLABEL']
+    plotter       = arguments['PLOTTER']
+
+    interpolation = arguments['INTERPOLATION']
+    colors        = arguments['COLORS']
+    linestyles    = arguments['LINESTYLES']
+    linewidths    = float(arguments['LINEWIDTHS'])
+    printIO       = ( arguments['PRINT_IO'] == 'True' )
+
+    kwargs = {}
+    if plotter == 'imshow':
+        kwargs['interpolation'] = interpolation
+    else:
+        kwargs['colors'] = colors
+        kwargs['linestyles'] = linestyles
+        kwargs['linewidths'] = linewidths
 
     plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLevels,
-                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter, printIO)
+                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter, printIO, kwargs)

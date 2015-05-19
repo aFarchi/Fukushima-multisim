@@ -18,7 +18,7 @@ from plotter2d                             import multiPlotter2d
 from triplotter                            import triPlotter
 
 def plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLevelsAnalyse,
-                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter, printIO=False):
+                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter='imshow', printIO=False, **kwargs):
         
     fileProcesses   = outputDir + sessionName + 'list_processes.dat'
     procList        = readListOfProcesses(fileProcesses, outputDir + sessionName, '/')
@@ -31,33 +31,40 @@ def plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLeve
 
     runCommand('mkdir -p '+directory, printIO)
 
+    if not kwargs.has_key('extent'):
+        kwargs['extent'] = [0.0, 1.0, 0.0, 1.0]
+    if not kwargs.has_key('interpolation'):
+        kwargs['interpolation'] = 'nearest'
+    if not kwargs.has_key('colors'):
+        kwargs['colors'] = 'k'
+    if not kwargs.has_key('linestyles'):
+        kwargs['linestyles'] = 'solid'
+    if not kwargs.has_key('linewidths'):
+        kwargs['linewidths'] = 1.5
+
     for GS in ['', '_greyScaleThreshold', '_greyScaleNoThreshold']:
 
         for i in xrange(len(procList)):
 
             fileName = procList[i] + 'toAnalyse/' + AOG + fieldName + '/' + lol + '/' + species + GS + '.npy'
             Y        = np.load(fileName)
-            figName  = directory + species + GS + suffixFileName(i, len(procList)) + '.pdf'
+            figName  = directory + species + GS + '_' + suffixFileName(i, len(procList)) + '.pdf'
 
             if 'greyScale' in GS:
                 X = np.linspace(scale.mini, scale.maxi, nLevelsAnalyse)
                 plotter1d(figName, X, Y, ylims=[0.0 ,1.0], title=fieldName+'\n grey scale', grid=True, printIO=printIO)
             else:
-                kwargs           = {}
-                kwargs['extent'] = [0.0, 1.0, 0.0, 1.0] 
                 plotter2d(figName, Y, scale.mini, scale.maxi, plotter=plotter, title=fieldName, xLabel=xLabel, yLabel=yLabel, printIO=printIO, **kwargs)
 
         fileNames = []
         for proc in procList:
             fileNames.append(proc + 'toAnalyse/' + AOG + fieldName + '/' + lol + '/' + species + GS + '.npy')
-        figName = directory + species + GS + 'allSim.pdf'
+        figName = directory + species + GS + '_allSim.pdf'
 
         if 'greyScale' in GS:
             X = np.linspace(scale.mini, scale.maxi, nLevelsAnalyse)
             multiPlotter1d(figName, X, fileNames, ylims=[0.0 ,1.0], supTitle=fieldName+'\n grey scale', grid=True, printIO=printIO)
         elif len(Y.shape) == 2:
-            kwargs           = {}
-            kwargs['extent'] = [0.0, 1.0, 0.0, 1.0]
             multiPlotter2d(figName, fileNames, scale.mini, scale.maxi, plotter=plotter, supTitle=fieldName, printIO=printIO, **kwargs)
 
     for i in xrange(len(procList)):
@@ -67,11 +74,11 @@ def plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLeve
         GSNT = np.load(prefixFn+'_greyScaleNoThreshold.npy')
         XGS  = np.linspace(scale.mini, scale.maxi, nLevelsAnalyse)
 
-        figName  = directory + species + 'triPlot' + suffixFileName(i, len(procList)) + '.pdf'
+        figName  = directory + species + '_triPlot_' + suffixFileName(i, len(procList)) + '.pdf'
         triPlotter(figName, XGS, GST, GSNT, Y, plotter=plotter, title=fieldName, xLabel=xLabel, yLabel=yLabel,
                    mini=scale.mini, maxi=scale.maxi, printIO=printIO)
 
-def plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='imshow', printIO=False):
+def plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='imshow', printIO=False, **kwargs):
 
     figDir        = outputDir + sessionName + 'figures/'
     fileProcesses = outputDir + sessionName + 'list_processes.dat'
@@ -88,5 +95,4 @@ def plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='imshow', print
                     labels = field.labels
                     for lol in ['lin','log']:
                         plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLevelsAnalyse,
-                                                      AOG, field.name, lol, species, labels[0], labels[1], plotter, printIO)
-
+                                                      AOG, field.name, lol, species, labels[0], labels[1], plotter, printIO, **kwargs)

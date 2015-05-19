@@ -14,7 +14,8 @@ from ..utils.io.readLists                  import readListOfProcesses
 from ..utils.io.readLists                  import suffixFileName
 from ..utils.scaling.scaling               import arrayToScaling
 
-def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='imshow', printIO=False):
+def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='imshow',
+                             interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5, printIO=False):
 
     figDir        = outputDir + sessionName + 'figures/'
     statDir       = outputDir + sessionName + 'statistics/'
@@ -50,20 +51,26 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
 
     fileNameProcesses = launcherDir + 'processesPlot2dFields.dat'
     fileProcesses     = open(fileNameProcesses, 'w')
-    fileProcesses.write('FUNCTION'     + '\t' +
-                        'OUTPUT_DIR'   + '\t' +
-                        'SESSION_NAME' + '\t' +
-                        'STAT_DIR'     + '\t' +
-                        'FIG_DIR'      + '\t' +
-                        'N_LEVELS'     + '\t' +
-                        'AOG'          + '\t' +
-                        'FIELD_NAME'   + '\t' +
-                        'LOL'          + '\t' +
-                        'SPECIES'      + '\t' +
-                        'XLABEL'       + '\t' +
-                        'YLABEL'       + '\t' +
-                        'PLOTTER'      + '\t' +
-                        'PRINT_IO'     + '\n' )
+    fileProcesses.write('FUNCTION'      + '\t' +
+                        'OUTPUT_DIR'    + '\t' +
+                        'SESSION_NAME'  + '\t' +
+                        'STAT_DIR'      + '\t' +
+                        'FIG_DIR'       + '\t' +
+                        'N_LEVELS'      + '\t' +
+                        'AOG'           + '\t' +
+                        'FIELD_NAME'    + '\t' +
+                        'LOL'           + '\t' +
+                        'SPECIES'       + '\t' +
+                        'XLABEL'        + '\t' +
+                        'YLABEL'        + '\t' +
+                        'PLOTTER'       + '\t' +
+                        'INTERPOLATION' + '\t' +
+                        'COLORS'        + '\t' +
+                        'LINESTYLES'    + '\t' +
+                        'LINEWIDTHS'    + '\t' +
+                        'PRINT_IO'      + '\n' )
+
+interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5
 
     for AOG in ['air/','ground/']:
         for GOR in ['gaz','radios']:
@@ -84,6 +91,10 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
                                             labels[0]           + '\t' +
                                             labels[1]           + '\t' +
                                             plotter             + '\t' +
+                                            interpolation       + '\t' +
+                                            colors              + '\t' +
+                                            linestyles          + '\t' +
+                                            str(linewidths)     + '\t' +
                                             str(printIO)        + '\n' )
 
     print('Written '+launcher+' ...')
