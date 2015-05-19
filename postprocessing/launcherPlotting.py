@@ -2,7 +2,8 @@
 import os
 import sys
 
-from analyse.plotting.plotFields                          import plot2dProcessedRawDataSpecies
+from analyse.plotting.plotFields import plot2dProcessedRawDataSpecies
+from analyse.plotting.plotFields import plot2dFields
 
 # Read the list of parameters
 
@@ -43,4 +44,25 @@ if arguments['FUNCTION'] == 'plot2dFields':
         kwargs['linewidths'] = linewidths
 
     plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLevels,
-                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter, printIO, kwargs)
+                                  AOG, fieldName, lol, species, xLabel, yLabel, plotter, printIO, **kwargs)
+
+if arguments['FUNCTION'] == 'plot2dFields':
+    outputDir     = arguments['OUTPUT_DIR']
+    sessionName   = arguments['SESSION_NAME']
+    nLevels       = int(arguments['N_LEVELS'])
+    plotter       = arguments['PLOTTER']
+    interpolation = arguments['INTERPOLATION']
+    colors        = arguments['COLORS']
+    linestyles    = arguments['LINESTYLES']
+    linewidths    = float(arguments['LINEWIDTHS'])
+    printIO       = ( arguments['PRINT_IO'] == 'True' )
+
+    kwargs = {}
+    if plotter == 'imshow':
+        kwargs['interpolation'] = interpolation
+    else:
+        kwargs['colors'] = colors
+        kwargs['linestyles'] = linestyles
+        kwargs['linewidths'] = linewidths
+
+    plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter=plotter, printIO=printIO, **kwargs)

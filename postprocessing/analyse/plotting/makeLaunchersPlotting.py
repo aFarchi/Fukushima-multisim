@@ -6,6 +6,7 @@ import numpy as np
 
 from ..utils.absolutePath                  import modulePath
 from ..utils.absolutePath                  import moduleLauncher
+from ..utils.absolutePath                  import moduleLauncherPlotting
 
 from ..utils.run.run                       import runCommand
 from ..utils.species.listOfSpecies         import ListOfSpecies
@@ -29,16 +30,19 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     fieldList     = defineFields()
 
     launcher      = launcherDir + 'plot2dFields.sh'
+    sLauncher     = launcherDir + 'plot2dFields-1proc.sh'
     f             = open(modulePath() + 'utils/launchers/defaultLauncher.sh', 'r')
     lines         = f.readlines()
     f.close()
+
+
 
     f = open(launcher, 'w')
     for line in lines:
         if '$fileProcesses$' in line:
             f.write(line.replace('$fileProcesses$', launcherDir+'processesPlot2dFields.dat'))
         elif '$launcher$' in line:
-            f.write(line.replace('$launcher$', moduleLauncher()))
+            f.write(line.replace('$launcher$', moduleLauncherPlotting()))
         elif '$startString$' in line:
             f.write(line.replace('$startString$', 'Plotting 2d fields'))
         elif '$logFile$' in line:
@@ -49,6 +53,7 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
             f.write(line)
     f.close()
 
+    fs                = open(sLauncher, 'w')
     fileNameProcesses = launcherDir + 'processesPlot2dFields.dat'
     fileProcesses     = open(fileNameProcesses, 'w')
     fileProcesses.write('FUNCTION'      + '\t' +
@@ -69,8 +74,6 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
                         'LINESTYLES'    + '\t' +
                         'LINEWIDTHS'    + '\t' +
                         'PRINT_IO'      + '\n' )
-
-interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5
 
     for AOG in ['air/','ground/']:
         for GOR in ['gaz','radios']:
@@ -97,7 +100,22 @@ interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5
                                             str(linewidths)     + '\t' +
                                             str(printIO)        + '\n' )
 
+    fs.write(moduleLauncherPlotting()                +
+             ' FUNCTION='      + 'plot2dFields'      +
+             ' OUTPUT_DIR='    + outputDir           +
+             ' SESSION_NAME='  + sessionName         +
+             ' N_LEVELS='      + str(nLevelsAnalyse) +
+             ' PLOTTER='       + plotter             +
+             ' INTERPOLATION=' + interpolation       +
+             ' COLORS='        + colors              +
+             ' LINESTYLES='    + linestyles          +
+             ' LINEWIDTHS='    + str(linewidths)     +
+             ' PRINT_IO'       + str(printIO)        + '\n')
+
+    fileProcesses.close()
+    fs.close()
     print('Written '+launcher+' ...')
+    print('Written '+sLauncher+' ...')
     print('Written '+fileNameProcesses+' ...')
     runCommand('cp '+modulePath()+'utils/launchers/defaultNodes.dat '+launcherDir+'nodesPlot2dFields.dat')    
     print('Do not forget to specify nodes and log files.')

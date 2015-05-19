@@ -42,8 +42,9 @@ def plotter2d(figName, Y, mini=None, maxi=None, plotter='imshow', title='', xLab
     ax.set_yticks(yticks)
     ax.set_xticks(xticks)
 
-    kwargs['vmin'] = mini
-    kwargs['vmax'] = maxi
+    kwargs['origin'] = 'lower'
+    kwargs['vmin']   = mini
+    kwargs['vmax']   = maxi
 
     im = plotMatrix(ax, Y, plotter, **kwargs)
     
@@ -71,8 +72,9 @@ def multiPlotter2d(figName, arrayNameList, mini, maxi, plotter='imshow', titleLi
         for i in xrange(nbr):
             titleList.append('sim '+str(i))
 
-    kwargs['vmin'] = mini
-    kwargs['vmax'] = maxi
+    kwargs['origin'] = 'lower'
+    kwargs['vmin']   = mini
+    kwargs['vmax']   = maxi
     
     Nc = int(np.floor(np.sqrt(nbr)))
     Nl = Nc
