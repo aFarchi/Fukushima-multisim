@@ -130,13 +130,13 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
     fileProcessesMerge   = open(processesMerge, 'w')
     fileProcessesMerge.write('FUNCTION\tNBR_PROC\tDIR\tALGO\tPRINT_IO\n')
 
-    processesPlot        = launcherDir + 'plotOTGS/processesPlotOTGSAnalyse.dat'
+    processesPlot        = launcherDir + 'plotOTGS/processesPlotOTGSResults.dat'
     fileProcessesPlot    = open(processesPlot, 'w')
-    fileProcessesPlot.write('CONFIG_FILE\nFIG_DIR\tPRINT_IO\n')
+    fileProcessesPlot.write('CONFIG_FILE\tFIG_DIR\tPRINT_IO\n')
 
-    processesAnim        = launcherDir + 'animOTGS/processesAnimOTGSAnalyse.dat'
+    processesAnim        = launcherDir + 'animOTGS/processesAnimOTGSResults.dat'
     fileProcessesAnim    = open(processesAnim, 'w')
-    fileProcessesAnim.write('CONFIG_FILE\nFIG_DIR\tPRINT_IO\n')
+    fileProcessesAnim.write('CONFIG_FILE\tFIG_DIR\tPRINT_IO\n')
 
     for AOG in ['air/','ground/']:
         for GOR in ['gaz','radios']:
