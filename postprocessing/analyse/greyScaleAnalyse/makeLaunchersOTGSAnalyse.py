@@ -1,9 +1,6 @@
-#######################
-# performOTGSAnalyse.py
-#######################
-
-import cPickle as pck
-import numpy as np
+#############################
+# makeLaunchersOTGSAnalyse.py
+#############################
 
 from ..utils.absolutePath                  import modulePath
 from ..utils.absolutePath                  import OTPath
@@ -210,17 +207,3 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
     runCommand('cp '+modulePath()+'utils/launchers/defaultNodes.dat '+launcherDir+'animOTGS/nodesAnimOTGSResults.dat', printIO)
 
     print('Do not forget to specify nodes and log files.')
-
-def mergeOTGSResults(nbrProc, directory, algoName, printIO=False):
-    results = np.zeros(shape = (nbrProc,nbrProc))
-    for p1 in xrange(nbrProc):
-        for p2 in xrange(p1):
-            res = directory + str(p1) + '-' + str(p2) + '/output_'+algoName+'/result.bin'
-            f = open(res, 'rb')
-            p = pck.Unpickler(f)
-            results[p1,p2] = p.load()
-            results[p2,p1] = results[p1,p2]
-            f.close()
-    np.save(directory+'/result_'+algoName+'.npy',results)
-    if printIO:
-        print('Results merged in '+directory+' ...')
