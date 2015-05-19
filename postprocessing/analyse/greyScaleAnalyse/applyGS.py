@@ -20,7 +20,7 @@ def applyGStoSpecies(outputDir, sessionName, OTGSDir, applyOTGSDir, statDir,
     applydirectory  = applyOTGSDir + AOG + fieldName + '/' + lol + '/' + TS + '/' + species + '/'
 
     fn    = statDir + 'scaling/' + AOG + fieldName + '/' + lol + '/' + species + '.npy'
-    array = np.load(fn+'.npy')
+    array = np.load(fn)
     scale = arrayToScaling(array)
 
     def G(x):
