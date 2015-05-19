@@ -35,8 +35,6 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     lines         = f.readlines()
     f.close()
 
-
-
     f = open(launcher, 'w')
     for line in lines:
         if '$fileProcesses$' in line:
@@ -54,6 +52,8 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     f.close()
 
     fs                = open(sLauncher, 'w')
+    fs.write('#!/bin/bash')
+    
     fileNameProcesses = launcherDir + 'processesPlot2dFields.dat'
     fileProcesses     = open(fileNameProcesses, 'w')
     fileProcesses.write('FUNCTION'      + '\t' +
@@ -119,3 +119,24 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     print('Written '+fileNameProcesses+' ...')
     runCommand('cp '+modulePath()+'utils/launchers/defaultNodes.dat '+launcherDir+'nodesPlot2dFields.dat')    
     print('Do not forget to specify nodes and log files.')
+
+def makeLauncherPlotAppliedGS(outputDir, sessionName, plotter='imshow',
+                              interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5, printIO=False):
+
+    launcherDir   = outputDir + sessionName + 'launchers/plotting/plotAppliedGS/'
+    runCommand('mkdir -p '+launcherDir)
+    
+    sLauncher     = launcherDir + 'plot2dAppliedGS-1proc.sh'
+    fs            = open(sLauncher, 'w')
+    fs.write('#!/bin/bash')
+
+    fs.write(moduleLauncherPlotting()            +
+             ' FUNCTION='      + 'plotAppliedGS' +
+             ' OUTPUT_DIR='    + outputDir       +
+             ' SESSION_NAME='  + sessionName     +
+             ' PLOTTER='       + plotter         +
+             ' INTERPOLATION=' + interpolation   +
+             ' COLORS='        + colors          +
+             ' LINESTYLES='    + linestyles      +
+             ' LINEWIDTHS='    + str(linewidths) +
+             ' PRINT_IO'       + str(printIO)    + '\n')

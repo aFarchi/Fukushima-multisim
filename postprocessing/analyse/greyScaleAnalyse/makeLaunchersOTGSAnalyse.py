@@ -11,12 +11,13 @@ from ..utils.species.listOfSpecies         import ListOfSpecies
 from ..utils.fields.defineFields           import defineFields
 from ..utils.io.readLists                  import readListOfProcesses
 
-def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=False):
+def makeLaunchersOTGSAnalyse(outputDir, sessionName, nLevelsAnalyse, printIO=False):
 
     fileProcesses      = outputDir + sessionName + 'list_processes.dat'
     OTGSDir            = outputDir + sessionName + 'OTGS/'
     configOTtoComplete = modulePath() + 'utils/configOT/OTGS.cfg'
-    launcherDir = outputDir + sessionName + 'launchers/OTGSAnalyse/'
+    launcherDir        = outputDir + sessionName + 'launchers/OTGSAnalyse/'
+    figDir             = outputDir + sessionName + 'figures/OTGSAnalyse/'
 
     for subdir in ['performOTGS/', 'mergeOTGS/', 'plotOTGS/', 'animOTGS/']:
         runCommand('mkdir -p '+launcherDir+subdir, printIO)
@@ -138,6 +139,15 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
     fileProcessesAnim    = open(processesAnim, 'w')
     fileProcessesAnim.write('CONFIG_FILE\tFIG_DIR\tPRINT_IO\n')
 
+
+    sLauncherPlot     = launcherDir + 'plotOTGS/plotOTGSResults-1proc.sh'
+    sLauncherAnim     = launcherDir + 'plotOTGS/animOTGSResults-1proc.sh'
+    fileSLauncherPlot = open(sLauncherPlot, 'w')
+    fileSLauncherAnim = open(sLauncherAnim, 'w')
+    fileSLauncherPlot.write('#!/bin/bash')
+    fileSLauncherAnim.write('#!/bin/bash')
+
+
     for AOG in ['air/','ground/']:
         for GOR in ['gaz','radios']:
             for species in lists.speciesList[GOR]:
@@ -150,6 +160,7 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
                                 for p2 in xrange(p1):
 
                                     oDir   = directory + str(p1) + '-' + str(p2) + '/'
+                                    fDir   = figDir + AOG + field.name + '/' + lol + '/' + TS + '/' + species + '/' + str(p1) + '-' + str(p2) + '/'
                                     runCommand('mkdir -p '+oDir, printIO)
 
                                     filef0 = procList[p1] + 'toAnalyse/' + AOG + field.name + '/' + lol + '/' + species + '_greyScale' + TS + '.npy'
@@ -178,11 +189,20 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
                                         fileProcessesPerform.write(oDir+'OTGS_'+algoName+'.cfg\t' +
                                                                    str(printIO)+'\n')
                                         fileProcessesPlot.write(oDir+'OTGS_'+algoName+'.cfg\t' + 
-                                                                outputDir+'output_'+algoName+'/figures/\t' + 
+                                                                fDir+'output_'+algoName+'/\t' + 
                                                                 str(printIO)+'\n')
                                         fileProcessesAnim.write(oDir+'OTGS_'+algoName+'.cfg\t' + 
-                                                                outputDir+'output_'+algoName+'/figures/\t' +
+                                                                fDir+'output_'+algoName+'/\t' +
                                                                 str(printIO)+'\n')
+
+                                        fileSLauncherPlot.write(OTPath()+'plotDirectory1D.py' +
+                                                                ' CONFIG_FILE=' + oDir + 'OTGS_' + algoName + '.cfg' +
+                                                                ' FIG_DIR='     + fDir + 'output_' + algoName + '/' + 
+                                                                ' PRINT_IO='    + str(printIO) + '\n')
+                                        fileSLauncherAnim.write(OTPath()+'animDirectory1D.py' +
+                                                                ' CONFIG_FILE=' + oDir + 'OTGS_' + algoName + '.cfg' +
+                                                                ' FIG_DIR='     + fDir + 'output_' + algoName + '/' + 
+                                                                ' PRINT_IO='    + str(printIO) + '\n')
 
                             for algoName in listAlgoName:
                                 fileProcessesMerge.write('mergeOTGSResults\t'+str(len(procList))+'\t'+directory+'\t'+algoName+'\t'+str(printIO)+'\n')
@@ -191,7 +211,9 @@ def makeLaunchersOTGSAnlyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fals
     fileProcessesMerge.close()
     fileProcessesPlot.close()
     fileProcessesAnim.close()
-
+    fileSLauncherPlot.close()
+    fileSLauncherAnim.close()
+    
     print('Written '+launcherPerform+' ...')
     print('Written '+launcherMerge+' ...')
     print('Written '+launcherPlot+' ...')

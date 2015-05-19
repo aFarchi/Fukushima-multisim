@@ -2,9 +2,9 @@
 import os
 import sys
 
-from analyse.plotting.plotFields import plot2dProcessedRawDataSpecies
-from analyse.plotting.plotFields import plot2dFields
-
+from analyse.plotting.plotFields  import plot2dProcessedRawDataSpecies
+from analyse.plotting.plotFields  import plot2dFields
+from analyse.plotting.plotApplyGS import plotAppliedGS 
 # Read the list of parameters
 
 sys.argv.pop(0)
@@ -66,3 +66,25 @@ if arguments['FUNCTION'] == 'plot2dFields':
         kwargs['linewidths'] = linewidths
 
     plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter=plotter, printIO=printIO, **kwargs)
+
+if arguments['FUNCTION'] == 'plotAppliedGS':
+
+    outputDir     = arguments['OUTPUT_DIR']
+    sessionName   = arguments['SESSION_NAME']
+    nLevels       = int(arguments['N_LEVELS'])
+    plotter       = arguments['PLOTTER']
+    interpolation = arguments['INTERPOLATION']
+    colors        = arguments['COLORS']
+    linestyles    = arguments['LINESTYLES']
+    linewidths    = float(arguments['LINEWIDTHS'])
+    printIO       = ( arguments['PRINT_IO'] == 'True' )
+    
+    kwargs = {}
+    if plotter == 'imshow':
+        kwargs['interpolation'] = interpolation
+    else:
+        kwargs['colors'] = colors
+        kwargs['linestyles'] = linestyles
+        kwargs['linewidths'] = linewidths
+
+    plotAppliedGS(outputDir, sessionName, plotter, printIO, **kwargs)
