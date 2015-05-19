@@ -60,19 +60,18 @@ def mergeScalings(scalings, maximums, fieldList, procList):
             meanMeans     = 0.
             geomMeanMeans = 1.
             meanVars      = 0.
+
+            mini = scalings[lol][field][procList[0]].mini
+            maxi = scalings[lol][field][procList[0]].maxi
             
             for proc in procList:
                 meanMeans     += scalings[lol][field][proc].mean
                 geomMeanMeans *= scalings[lol][field][proc].mean
                 meanVars      += scalings[lol][field][proc].var
 
-                try:
-                    mini = min( mini , scalings[lol][field][proc].mini )
-                    maxi = max( maxi , scalings[lol][field][proc].maxi )
-                except:
-                    mini = scalings[lol][field][proc].mini
-                    maxi = scalings[lol][field][proc].maxi
-
+                mini = min( mini , scalings[lol][field][proc].mini )
+                maxi = max( maxi , scalings[lol][field][proc].maxi )
+                
             meanMeans    /= len(procList)
             geomMeanMeans = np.power(max(geomMeanMeans, 0.0), 1./len(procList))
             meanVars     /= len(procList)
