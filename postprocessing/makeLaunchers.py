@@ -1,4 +1,6 @@
-from analyse.preprocessRawData.makeLauncherPreprocess          import makeLauncherPrepareAllFields
+#!/usr/bin/env python
+
+from analyse.preprocessRawData.makeLauncherPreprocess          import makeLauncherPreprocessRawDataForAllSpecies
 from analyse.statisticalAnalyse.makeLauncherStatisticalAnalyse import makeLauncherAnalyseAllFields 
 from analyse.greyScaleAnalyse.makeLaunchersOTGSAnalyse         import makeLaunchersOTGSAnalyse
 from analyse.greyScaleAnalyse.makeLauncherApplyGS              import makeLauncherApplyGS
@@ -24,7 +26,7 @@ OTGSAnalyse        = True
 applyGS            = False
 
 if prepareAllFieds:
-    makeLauncherPrepareAllFields(oDir, sName, xTSelect, analyseShape, nLevelsAnalyse, printIO)
+    makeLauncherPreprocessRawDataForAllSpecies(oDir, sName, xTSelect, analyseShape, nLevelsAnalyse, printIO)
 
 if statisticalAnalyse:
     makeLauncherAnalyseAllFields(oDir, sName, printIO=printIO)

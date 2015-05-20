@@ -2,8 +2,9 @@
 import os
 import sys
 
-from analyse.preprocessRawData.preprocessRawData          import prepareSpecies
-from analyse.utils.tSelection.defaultTSelect              import makeSelectXtimesNt
+from analyse.preprocessRawData.preprocessRawData          import preprocessRawDataForSpecies
+
+
 from analyse.statisticalAnalyse.performStatisticalAnalyse import analyseAllFields
 from analyse.greyScaleAnalyse.mergeOTGSResults            import mergeOTGSResults
 from analyse.greyScaleAnalyse.applyGS                     import applyGStoSpecies
@@ -18,24 +19,22 @@ for arg in sys.argv:
 
 # launch the correct function
 
-if arguments['FUNCTION'] == 'prepareSpecies':
-    outputDir   = arguments['OUTPUT_DIR']
-    sessionName = arguments['SESSION_NAME']
-    xTSelect    = float(arguments['X_TSELECT'])
-    ntAnalyse   = int(arguments['NT_ANALYSE'])
-    nzAnalyse   = int(arguments['NZ_ANALYSE'])
-    nyAnalyse   = int(arguments['NY_ANALYSE'])
-    nxAnalyse   = int(arguments['NX_ANALYSE'])
-    nLevels     = int(arguments['N_LEVELS'])
-    AOG         = arguments['AOG']
-    GOR         = arguments['GOR']
-    species     = arguments['SPECIES']
-    printIO     = ( arguments['PRINT_IO'] == 'True' )
-
+if arguments['FUNCTION'] == 'preprocessRawDataForSpecies':
+    outputDir    = arguments['OUTPUT_DIR']
+    sessionName  = arguments['SESSION_NAME']
+    xTSelect     = float(arguments['X_TSELECT'])
+    ntAnalyse    = int(arguments['NT_ANALYSE'])
+    nzAnalyse    = int(arguments['NZ_ANALYSE'])
+    nyAnalyse    = int(arguments['NY_ANALYSE'])
+    nxAnalyse    = int(arguments['NX_ANALYSE'])
+    nLevels      = int(arguments['N_LEVELS'])
+    AOG          = arguments['AOG']
+    GOR          = arguments['GOR']
+    species      = arguments['SPECIES']
+    printIO      = ( arguments['PRINT_IO'] == 'True' )
     analyseShape = (ntAnalyse,nzAnalyse,nyAnalyse,nxAnalyse)
-    funTSelect   = makeSelectXtimesNt(xTSelect)
-    
-    prepareSpecies(outputDir, sessionName, funTSelect, analyseShape, nLevels, AOG, GOR, species, printIO)
+
+    preprocessRawDataForSpecies(outputDir, sessionName, xTSelect, analyseShape, nLevels, AOG, GOR, species, printIO)
 
 if arguments['FUNCTION'] == 'analyseAllFields':
     outputDir   = arguments['OUTPUT_DIR']
