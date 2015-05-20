@@ -39,8 +39,12 @@ def computeScaling(matrix):
     extent       = maxi - mini
 
     if extent <= 0.0:
-        extent = mini
-        maxi   = 2 * mini
+        extent = abs(mini)
+        maxi   = mini + extent
+
+    if extent == 0.0: # in case we are with a log scale and there is nothing
+        extent = 1.0
+        maxi   = 1.0
 
     scaling.mini = mini - 0.001 * extent
     scaling.maxi = maxi + 0.001 * extent

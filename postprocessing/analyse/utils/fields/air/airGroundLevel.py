@@ -20,5 +20,8 @@ class AirGroundLevel:
         t = self.funTSelect(rawData.shape[0])
         return rawData[t,0,:,:].transpose()
 
+    def extractAllIterations(self, rawData):
+        return rawData[:,0,:,:].transpose((0,2,1))
+    
     def interpolate(self, extractedData, analyseShape):
         return interpolateRawData(extractedData, (analyseShape[3], analyseShape[2]))

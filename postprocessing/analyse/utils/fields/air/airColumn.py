@@ -33,5 +33,11 @@ class AirColumn:
         else:
             return np.average(rawData[t,:,:,:],axis=0,weights=self.weights).transpose()
 
+    def extractAllIterations(self, rawData):
+        if self.weights is None:
+            return np.average(rawData[:,:,:,:],axis=1).transpose((0,2,1))
+        else:
+            return np.average(rawData[:,:,:,:],axis=1,weights=self.weights).transpose((0,2,1))
+
     def interpolate(self, extractedData, analyseShape):
         return interpolateRawData(extractedData, (analyseShape[3], analyseShape[2]))
