@@ -81,24 +81,24 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
                 for field in fieldList[AOG]:
                     labels = field.labels
                     for lol in ['lin','log']:
-                        fileProcesses.write('plot2dFields'      + '\t' +
-                                            outputDir           + '\t' +
-                                            sessionName         + '\t' +
-                                            statDir             + '\t' +
-                                            figDir              + '\t' +
-                                            str(nLevelsAnalyse) + '\t' +
-                                            AOG                 + '\t' +
-                                            field.name          + '\t' +
-                                            lol                 + '\t' +
-                                            species             + '\t' +
-                                            labels[0]           + '\t' +
-                                            labels[1]           + '\t' +
-                                            plotter             + '\t' +
-                                            interpolation       + '\t' +
-                                            colors              + '\t' +
-                                            linestyles          + '\t' +
-                                            str(linewidths)     + '\t' +
-                                            str(printIO)        + '\n' )
+                        fileProcesses.write('plot2dProcessedRawDataSpecies' + '\t' +
+                                            outputDir                       + '\t' +
+                                            sessionName                     + '\t' +
+                                            statDir                         + '\t' +
+                                            figDir                          + '\t' +
+                                            str(nLevelsAnalyse)             + '\t' +
+                                            AOG                             + '\t' +
+                                            field.name                      + '\t' +
+                                            lol                             + '\t' +
+                                            species                         + '\t' +
+                                            labels[0]                       + '\t' +
+                                            labels[1]                       + '\t' +
+                                            plotter                         + '\t' +
+                                            interpolation                   + '\t' +
+                                            colors                          + '\t' +
+                                            linestyles                      + '\t' +
+                                            str(linewidths)                 + '\t' +
+                                            str(printIO)                    + '\n' )
 
     fs.write(moduleLauncherPlotting()                +
              ' FUNCTION='      + 'plot2dFields'      +

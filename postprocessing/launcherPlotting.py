@@ -15,7 +15,7 @@ for arg in sys.argv:
 
 # launch the correct function
 
-if arguments['FUNCTION'] == 'plot2dFields':
+if arguments['FUNCTION'] == 'plot2dProcessedRawDataSpecies':
     outputDir     = arguments['OUTPUT_DIR']
     sessionName   = arguments['SESSION_NAME']
     statDir       = arguments['STAT_DIR']
@@ -65,7 +65,7 @@ if arguments['FUNCTION'] == 'plot2dFields':
         kwargs['linestyles'] = linestyles
         kwargs['linewidths'] = linewidths
 
-    plot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter=plotter, printIO=printIO, **kwargs)
+    plot2dFields(outputDir, sessionName, nLevels, plotter=plotter, printIO=printIO, **kwargs)
 
 if arguments['FUNCTION'] == 'plotAppliedGS':
 

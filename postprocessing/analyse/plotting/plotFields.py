@@ -33,14 +33,17 @@ def plot2dProcessedRawDataSpecies(outputDir, sessionName, statDir, figDir, nLeve
 
     if not kwargs.has_key('extent'):
         kwargs['extent'] = [0.0, 1.0, 0.0, 1.0]
-    if not kwargs.has_key('interpolation'):
-        kwargs['interpolation'] = 'nearest'
-    if not kwargs.has_key('colors'):
-        kwargs['colors'] = 'k'
-    if not kwargs.has_key('linestyles'):
-        kwargs['linestyles'] = 'solid'
-    if not kwargs.has_key('linewidths'):
-        kwargs['linewidths'] = 1.5
+
+    if plotter == 'imshow':
+        if not kwargs.has_key('interpolation'):
+            kwargs['interpolation'] = 'nearest'
+    elif plotter == 'contour':
+        if not kwargs.has_key('colors'):
+            kwargs['colors'] = 'k'
+        if not kwargs.has_key('linestyles'):
+            kwargs['linestyles'] = 'solid'
+        if not kwargs.has_key('linewidths'):
+            kwargs['linewidths'] = 1.5
 
     for GS in ['', '_greyScaleThreshold', '_greyScaleNoThreshold']:
 
