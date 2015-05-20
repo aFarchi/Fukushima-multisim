@@ -31,10 +31,20 @@ def arrayToScaling(array):
 
 def computeScaling(matrix):
     scaling      = Scaling()
-    scaling.mini = matrix.min()
-    scaling.maxi = matrix.max()
     scaling.mean = matrix.mean()
     scaling.var  = matrix.var()
+
+    mini         = matrix.min()
+    maxi         = matrix.max()
+    extent       = maxi - mini
+
+    if extent <= 0.0:
+        extent = mini
+        maxi   = 2 * mini
+
+    scaling.mini = mini - 0.001 * extent
+    scaling.maxi = maxi + 0.001 * extent
+    
     return scaling
 
 def computeFMScaling(matrix, levels=None, mini=None, maxi=None, nLevels=32):
