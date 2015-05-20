@@ -5,6 +5,8 @@
 import cPickle as pck
 import numpy as np
 
+from ..utils.io.saveSymMatrix import saveSymMatrixEig
+
 def mergeOTGSResults(nbrProc, directory, algoName, printIO=False):
     results = np.zeros(shape = (nbrProc,nbrProc))
     for p1 in xrange(nbrProc):
@@ -15,6 +17,6 @@ def mergeOTGSResults(nbrProc, directory, algoName, printIO=False):
             results[p1,p2] = p.load()
             results[p2,p1] = results[p1,p2]
             f.close()
-    np.save(directory+'/result_'+algoName+'.npy',results)
+    saveSymMatrixEig(directory+'/result_'+algoName, results)
     if printIO:
         print('Results merged in '+directory+' ...')

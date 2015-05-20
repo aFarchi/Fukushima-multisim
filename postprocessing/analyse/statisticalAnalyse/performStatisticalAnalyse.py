@@ -10,25 +10,11 @@ import statisticalOperators as stats
 from ..utils.run.run               import runCommand
 from ..utils.io.readLists          import readListOfProcesses
 from ..utils.io.readLists          import suffixFileName
+from ..utils.io.saveSymMatrix      import saveSymMatrixEig
 from ..utils.absolutePath          import moduleLauncher
 from ..utils.species.listOfSpecies import ListOfSpecies
 from ..utils.fields.defineFields   import defineFields
 from ..utils.scaling.scaling       import arrayToScaling
-
-def saveSymMatrixEig(prefixFileName, matrix):
-    n = matrix.shape[0]
-
-    (eigVals,eigVects) = eigh(matrix)
-
-    indexes            = np.argsort(eigVals)
-    i                  = np.arange(n)
-
-    sortedEigVals      = eigVals[indexes[n-1-i]]
-    sortedEigVects     = eigVects[:, indexes[n-1-i]]
-
-    np.save(prefixFileName+'.npy', matrix)
-    np.save(prefixFileName+'_eigVals', sortedEigVals)
-    np.save(prefixFileName+'_eigVects', sortedEigVects)
 
 class Analyser:
     def __init__(self, nbrProc, scaling, chooseScaling='mean'):
