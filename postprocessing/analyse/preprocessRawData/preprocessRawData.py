@@ -123,12 +123,9 @@ def preprocessRawDataForSpecies(outputDir, sessionName, xTSelect, analyseShape, 
     procList             = readListOfProcesses(fileProcesses, outputDir + sessionName, '/')
     fieldList            = defineFields(funTSelect, fileLevels)
 
-    minValues            = {}
-    minValues['air/']    = 1.e-10 # in Bq/m^2
-    minValues['ground/'] = 1.e-10 # in Bq/m^3
-
-    log10                = Log10Function(minValues)
-    zeroFilter           = ZeroFilter(minValues)
+    log10                = Log10Function(lists.minValues)
+    zeroFilter           = ZeroFilter(lists.minValues)
+    zeroFilterGS         = ZeroFilter(lists.minValuesGS)
     # deltaT should be catched from config file ...
     deltaT               = 3600.
 
@@ -138,22 +135,13 @@ def preprocessRawDataForSpecies(outputDir, sessionName, xTSelect, analyseShape, 
                                zeroFilter, log10,
                                printIO)
 
-    minValuesGS             = {}
-    minValuesGS['air/']     = 1.e-11
-    minValuesGS['ground/']  = 1.e-11
-    zeroFilterGS            = ZeroFilter(minValuesGS)
-
-    minValuesLog            = {}
-    minValuesLog['air/']    = 0.0
-    minValuesLog['ground/'] = 0.0
-
     gsMakers                       = {}
     gsMakers['lin']                = {}
-    gsMakers['lin']['Threshold']   = GreyScaleMaker(minValues, True)
-    gsMakers['lin']['NoThreshold'] = GreyScaleMaker(minValues, False)
+    gsMakers['lin']['Threshold']   = GreyScaleMaker(lists.minValues, True)
+    gsMakers['lin']['NoThreshold'] = GreyScaleMaker(lists.minValues, False)
     gsMakers['log']                = {}
-    gsMakers['log']['Threshold']   = GreyScaleMaker(minValues, True)
-    gsMakers['log']['NoThreshold'] = GreyScaleMaker(minValues, False)
+    gsMakers['log']['Threshold']   = GreyScaleMaker(lists.minValuesLog, True)
+    gsMakers['log']['NoThreshold'] = GreyScaleMaker(lists.minValuesLog, False)
     
     completeScalingMakeGreyScaleAOGFields(species, AOG, GOR,
                                           fieldList[AOG], procList, lists.speciesBinList[GOR],
