@@ -23,7 +23,7 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     fileProcesses = outputDir + sessionName + 'list_processes.dat'
 
     launcherDir   = outputDir + sessionName + 'launchers/plotting/plot2dFields/'
-    runCommand('mkdir -p '+launcherDir)
+    runCommand('mkdir -p '+launcherDir, printIO)
 
     lists         = ListOfSpecies()
     procList      = readListOfProcesses(fileProcesses, outputDir+sessionName, '/')
@@ -124,7 +124,7 @@ def makeLauncherPlotAppliedGS(outputDir, sessionName, plotter='imshow',
                               interpolation='nearest', colors='k', linestyles='solid', linewidths=1.5, printIO=False):
 
     launcherDir   = outputDir + sessionName + 'launchers/plotting/plotAppliedGS/'
-    runCommand('mkdir -p '+launcherDir)
+    runCommand('mkdir -p '+launcherDir, printIO)
     
     sLauncher     = launcherDir + 'plot2dAppliedGS-1proc.sh'
     fs            = open(sLauncher, 'w')
@@ -140,3 +140,6 @@ def makeLauncherPlotAppliedGS(outputDir, sessionName, plotter='imshow',
              ' LINESTYLES='    + linestyles      +
              ' LINEWIDTHS='    + str(linewidths) +
              ' PRINT_IO'       + str(printIO)    + '\n')
+
+    fs.close()
+    print('Written '+sLauncher+' ...')
