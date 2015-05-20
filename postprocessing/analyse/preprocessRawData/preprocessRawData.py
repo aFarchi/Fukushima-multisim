@@ -13,7 +13,7 @@ from ..utils.scaling.scaling               import computeFMScaling
 from ..utils.scaling.scaling               import mergeScalings
 from ..utils.scaling.scaling               import addFMScaling
 from ..utils.scaling.scaling               import scalingToArray
-from ..utils.scaling.greyScale             import computeGreyScale
+from ..utils.scaling.greyScale             import GreyScaleMaker
 from ..utils.species.listOfSpecies         import ListOfSpecies
 from ..utils.io.readLists                  import readListOfProcesses
 from ..utils.fields.defineFields           import defineFields
@@ -69,7 +69,7 @@ def preprocessSpeciesRawData(species, AOG, GOR,
 def completeScalingMakeGreyScale(species, AOG, GOR,
                                  fieldList, procList, speciesBinList,
                                  rawShape, nLevelsAnalyse, deltaT,
-                                 zeroFilter, log10,
+                                 zeroFilter, log10, gsMakers,
                                  scaling, statDir,
                                  printIO=False):
 
@@ -96,18 +96,12 @@ def completeScalingMakeGreyScale(species, AOG, GOR,
 
                 scalingFM[lol][field][proc] = computeFMScaling(data, levels)
 
-                gst  = computeGreyScale(data, levels, threshold=True)
-                gsnt = computeGreyScale(data, levels, threshold=False)
-
-                fn = proc + 'toAnalyse/' + AOG + field.name + '/' + lol + '/' + species + '_greyScaleThreshold.npy'
-                if printIO:
-                    print ('Writing ' + fn + ' ...')
-                np.save(fn, gst)
-
-                fn = proc + 'toAnalyse/' + AOG + field.name + '/' + lol + '/' + species + '_greyScaleNoThreshold.npy'
-                if printIO:
-                    print ('Writing ' + fn + ' ...')
-                np.save(fn, gsnt)
+                for TS in ['Threshold', 'NoThreshold']:
+                    gs = gsMakers[lol][TS](data, AOG, levels)
+                    fn = proc + 'toAnalyse/' + AOG + field.name + '/' + lol + '/' + species + '_greyScale' + TS + '.npy'
+                    np.save(fn, gs)
+                    if printIO:
+                        print ('Writing ' + fn + ' ...')
 
     scaling = addFMScaling(scaling, scalingFM, fieldList, procList)
 
@@ -149,10 +143,28 @@ def prepareSpecies(outputDir, sessionName, funTSelect, analyseShape, nLevelsAnal
                                        lists.rawShapes[GOR][AOG], analyseShape, deltaT,
                                        zeroFilter, log10,
                                        printIO)
+
+    minValuesGS             = {}
+    minValuesGS['air/']     = 1.e-11
+    minValuesGS['ground/']  = 1.e-11
+    zeroFilterGS            = ZeroFilter(minValuesGS)
+
+    minValuesLog            = {}
+    minValuesLog['air/']    = 0.0
+    minValuesLog['ground/'] = 0.0
+
+    gsMakers                       = {}
+    gsMakers['lin']                = {}
+    gsMakers['lin']['Threshold']   = GreyScaleMaker(minValues, True)
+    gsMakers['lin']['NoThreshold'] = GreyScaleMaker(minValues, False)
+    gsMakers['log']                = {}
+    gsMakers['log']['Threshold']   = GreyScaleMaker(minValues, True)
+    gsMakers['log']['NoThreshold'] = GreyScaleMaker(minValues, False)
+    
     completeScalingMakeGreyScale(species, AOG, GOR,
                                  fieldList[AOG], procList, lists.speciesBinList[GOR],
                                  lists.rawShapes[GOR][AOG], nLevelsAnalyse, deltaT,
-                                 zeroFilter, log10,
+                                 zeroFilterGS, log10, gsMakers, 
                                  scaling, statDir,
                                  printIO)
 
