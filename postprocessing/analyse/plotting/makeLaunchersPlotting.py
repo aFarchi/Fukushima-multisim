@@ -52,7 +52,7 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
     f.close()
 
     fs                = open(sLauncher, 'w')
-    fs.write('#!/bin/bash')
+    fs.write('#!/bin/bash\n')
     
     fileNameProcesses = launcherDir + 'processesPlot2dFields.dat'
     fileProcesses     = open(fileNameProcesses, 'w')
@@ -110,7 +110,7 @@ def makeLauncherPlot2dFields(outputDir, sessionName, nLevelsAnalyse, plotter='im
              ' COLORS='        + colors              +
              ' LINESTYLES='    + linestyles          +
              ' LINEWIDTHS='    + str(linewidths)     +
-             ' PRINT_IO'       + str(printIO)        + '\n')
+             ' PRINT_IO='       + str(printIO)        + '\n')
 
     fileProcesses.close()
     fs.close()
@@ -128,7 +128,7 @@ def makeLauncherPlotAppliedGS(outputDir, sessionName, plotter='imshow',
     
     sLauncher     = launcherDir + 'plot2dAppliedGS-1proc.sh'
     fs            = open(sLauncher, 'w')
-    fs.write('#!/bin/bash')
+    fs.write('#!/bin/bash\n')
 
     fs.write(moduleLauncherPlotting()            +
              ' FUNCTION='      + 'plotAppliedGS' +
@@ -139,7 +139,7 @@ def makeLauncherPlotAppliedGS(outputDir, sessionName, plotter='imshow',
              ' COLORS='        + colors          +
              ' LINESTYLES='    + linestyles      +
              ' LINEWIDTHS='    + str(linewidths) +
-             ' PRINT_IO'       + str(printIO)    + '\n')
+             ' PRINT_IO='       + str(printIO)    + '\n')
 
     fs.close()
     print('Written '+sLauncher+' ...')

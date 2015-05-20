@@ -141,11 +141,11 @@ def makeLaunchersOTGSAnalyse(outputDir, sessionName, nLevelsAnalyse, printIO=Fal
 
 
     sLauncherPlot     = launcherDir + 'plotOTGS/plotOTGSResults-1proc.sh'
-    sLauncherAnim     = launcherDir + 'plotOTGS/animOTGSResults-1proc.sh'
+    sLauncherAnim     = launcherDir + 'animOTGS/animOTGSResults-1proc.sh'
     fileSLauncherPlot = open(sLauncherPlot, 'w')
     fileSLauncherAnim = open(sLauncherAnim, 'w')
-    fileSLauncherPlot.write('#!/bin/bash')
-    fileSLauncherAnim.write('#!/bin/bash')
+    fileSLauncherPlot.write('#!/bin/bash\n')
+    fileSLauncherAnim.write('#!/bin/bash\n')
 
 
     for AOG in ['air/','ground/']:

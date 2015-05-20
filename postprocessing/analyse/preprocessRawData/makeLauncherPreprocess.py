@@ -10,7 +10,7 @@ from ..utils.absolutePath                  import moduleLauncher
 from ..utils.run.run                       import runCommand
 from ..utils.species.listOfSpecies         import ListOfSpecies
 
-def makeLancherPrepareAllFields(outputDir, sessionName, xTSelect, analyseShape, nLevelsAnalyse, printIO=False):
+def makeLauncherPrepareAllFields(outputDir, sessionName, xTSelect, analyseShape, nLevelsAnalyse, printIO=False):
     launcherDir = outputDir+sessionName+'launchers/prepareAllFields/'
     runCommand('mkdir -p '+launcherDir, printIO)
 
