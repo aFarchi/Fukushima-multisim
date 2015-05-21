@@ -126,12 +126,10 @@ def preprocessRawDataForSpecies(outputDir, sessionName, xTSelect, analyseShape, 
     log10                = Log10Function(lists.minValues)
     zeroFilter           = ZeroFilter(lists.minValues)
     zeroFilterGS         = ZeroFilter(lists.minValuesGS)
-    # deltaT should be catched from config file ...
-    deltaT               = 3600.
 
     createDirectories(AOG, fieldList[AOG], procList, statDir, printIO)
     scaling = computeAOGFields(species, AOG, GOR, fieldList[AOG], procList, lists.speciesBinList[GOR],
-                               lists.rawShapes[GOR][AOG], analyseShape, deltaT,
+                               lists.rawShapes[GOR][AOG], analyseShape, lists.deltaT,
                                zeroFilter, log10,
                                printIO)
 
@@ -145,7 +143,7 @@ def preprocessRawDataForSpecies(outputDir, sessionName, xTSelect, analyseShape, 
     
     completeScalingMakeGreyScaleAOGFields(species, AOG, GOR,
                                           fieldList[AOG], procList, lists.speciesBinList[GOR],
-                                          lists.rawShapes[GOR][AOG], nLevelsAnalyse, deltaT,
+                                          lists.rawShapes[GOR][AOG], nLevelsAnalyse, lists.deltaT,
                                           zeroFilterGS, log10, gsMakers, 
                                           scaling, statDir,
                                           printIO)

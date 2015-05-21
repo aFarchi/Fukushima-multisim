@@ -52,4 +52,4 @@ class ListOfSpecies:
         self.minValuesGS['ground/']            = 1.e-11
         self.minValuesLog['air/']              = 0.0
         self.minValuesLog['ground/']           = 0.0
-            
+        self.deltaT                            = 3600.
