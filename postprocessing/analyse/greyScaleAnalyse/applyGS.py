@@ -44,8 +44,17 @@ def applyGStoSpecies(outputDir, sessionName, OTGSDir, applyOTGSDir, statDir,
             X = np.load(f)
             T = np.load(f)
             f.close()
-            T = np.maximum(0.0, np.minimum(1.0, T))
-            T[T.size-1] = 1.0
+
+            # make T strictly growing from [0,1] to [0,1]
+            NN    = T.size
+            error = 0.001
+            T[0]  = 0.0
+            T     = np.minimum(1.0, T)
+            DT    = T[1:] - T[:NN-1]
+            DT    = np.maximum(error/NN, DT)
+            T[1:] = DT.cumsum()
+
+            T    /= T[NN-1]
 
             Tmap  = interp1d(X, T)
             iTmap = interp1d(T, X)
