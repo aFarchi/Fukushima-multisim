@@ -35,10 +35,10 @@ class ListOfSpecies:
         raise ValueError('Not implemented')
 
     def defaultInit(self):
-        self.speciesList['gaz']                = ['I2']
+        #self.speciesList['gaz']                = ['I2']
         self.speciesList['radios']             = ['Cs137']
         
-        self.speciesBinList['gaz']['I2']       = ['I2']
+        #self.speciesBinList['gaz']['I2']       = ['I2']
         self.speciesBinList['radios']['Cs137'] = ['Cs137_0','Cs137_1','Cs137_2','Cs137_3','Cs137_4']
                 
         self.rawShapes['gaz']['air/']          = (83,15,120,120)
